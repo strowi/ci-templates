@@ -1,0 +1,102 @@
+.image_build: &image_build |
+
+  function define_image() {
+    # concat repo-path / image-name / branch : commit
+    test -n "$1" && SUB_IMAGE_NAME="${1}"
+    test -n "$2" && SUB_IMAGE_PATH="${2}"
+
+    export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}${SUB_IMAGE_NAME}"
+
+    echo "# Image Specs:"
+    echo "  - CI_COMMIT_REF_SLUG:  ${CI_COMMIT_REF_SLUG}"
+    echo "  - CI_COMMIT_SHORT_SHA: ${CI_COMMIT_SHORT_SHA}"
+    echo "  - SUB_IMAGE_NAME:      ${SUB_IMAGE_NAME}"
+    echo "  - SUB_IMAGE_PATH:      ${SUB_IMAGE_PATH}"
+    echo " -> Image:               ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    echo "##"
+  }
+
+  # setup docker with registry credentials
+  function docker_setup(){
+
+    echo "# Activating Docker BuildKit"
+    export DOCKER_BUILDKIT=1
+
+    echo "# Running Docker Login"
+    echo "  - User:     ${CI_REGISTRY_USER}"
+    echo "  - Registry: ${CI_REGISTRY}"
+
+    test -n "${CI_REGISTRY_USER}" \
+      && ( echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin )  \
+      || echo "  X no CI_REGISTRY_USER defined"
+
+    echo "##"
+  }
+
+  # release the image "$1" as "*:latest"
+  function release_latest() {
+
+    docker_setup
+    define_image "$1"
+
+    echo "# Releasing Image: "
+    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} -> ${CI_APPLICATION_REPOSITORY}:latest"
+
+    docker pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    docker tag  "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "${CI_APPLICATION_REPOSITORY}:latest"
+    docker push "${CI_APPLICATION_REPOSITORY}:latest"
+
+    echo "##"
+  }
+
+  # build docker image
+  # - "./build" builds ./Dockerfile -> "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  # - "./build subtag subdir" builds ./subdir/Dockerfile -> "${CI_REGISTRY_IMAGE}/subdir:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  function build_image() {
+
+    docker_setup
+    define_image "$1" "$2"
+
+    echo "# Building Images:"
+    echo "  - dir: ${2}"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+
+    echo "  - trying to pull cache-layers (errors are normal if image doesn't exist)"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:latest"
+
+    docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+      || docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+      || docker image pull "${CI_APPLICATION_REPOSITORY}:latest" \
+      || true
+
+
+    docker build \
+      --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+      --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
+      --cache-from "${CI_APPLICATION_REPOSITORY}:latest" \
+      --tag "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" \
+      --tag "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
+      --tag "${CI_APPLICATION_REPOSITORY}:latest" \
+      "${2:-.}"
+
+    echo "# Pushing Images:"
+    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+
+    echo "##"
+    # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  }
+
+
+.build:
+  image: "docker:stable"
+  interruptible: true
+  services:
+    - docker:stable-dind
+  before_script:
+    - *image_build
+

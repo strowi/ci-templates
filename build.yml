@@ -1,0 +1,7 @@
+include:
+  - project: 'sys/ci/templates'
+    file: '/build/docker.yml'
+  - project: 'sys/ci/templates'
+    file: '/build/composer.yml'
+
+

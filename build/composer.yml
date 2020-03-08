@@ -1,0 +1,11 @@
+.composer:
+  stage: composer
+  image: composer
+  interruptible: true
+  cache:
+    paths:
+      - $CI_PROJECT_DIR/.composer-cache
+  before_script:
+    - composer config -g cache-dir "$CI_PROJECT_DIR/.composer-cache"
+
+

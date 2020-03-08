@@ -1,0 +1,48 @@
+
+.dgoss_test: &dgoss_test |
+
+  # setup docker with registry credentials
+  # setup image-name+tags to build
+  function docker_setup(){
+
+    echo "# Activating Docker BuildKit"
+    export DOCKER_BUILDKIT=1
+
+    echo "# Running Docker Login"
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+
+    echo ""
+  }
+
+  # test image with dgoss
+  # for backward compatibility
+  function dgoss_run(){
+    docker_setup
+
+    echo "# setting up dgoss:"
+
+    echo "  GOSS_OPTS = --format junit + \$GOSS_OPTS"
+    echo "  GOSS_FILES_STRATEGY = cp + \$GOSS_FILES_STRATEGY"
+    echo ""
+    echo "  running dgoss run ${@} > goss.xml"
+    echo ""
+
+    dgoss run ${@} > goss.xml
+
+    echo "# end dgoss setup"
+  }
+
+.dgoss:
+  stage: test
+  interruptible: true
+  image: "hub.chefkoch.net/sys/ci/dgoss:latest"
+  services:
+    - docker:stable-dind
+  variables:
+    GOSS_OPTS: --format junit
+    GOSS_FILES_STRATEGY: cp
+  before_script:
+    - *dgoss_test
+  artifacts:
+    reports:
+      junit: goss.xml
