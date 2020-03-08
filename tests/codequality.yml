@@ -1,11 +1,17 @@
 code_quality:
   stage: test
-  interruptible: true
+  # pin to a version matching the dind service, just to be safe
+  image: docker:19.03.5
   cache: {}
+  interruptible: true
   allow_failure: true
+  services:
+    # pin to a known working version until https://gitlab.com/gitlab-org/gitlab-runner/issues/6697 is fixed
+    - docker:19.03.5-dind
   variables:
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.5"
-
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.6"
   script:
     - |
       if ! docker info &>/dev/null; then
@@ -31,3 +37,4 @@ code_quality:
   except:
     variables:
       - $CODE_QUALITY_DISABLED
+
