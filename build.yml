@@ -1,7 +1,7 @@
 include:
-  - project: 'sys/ci/templates'
+  - project: 'strowi/ci-templates'
     file: '/build/docker.yml'
-  - project: 'sys/ci/templates'
+  - project: 'strowi/ci-templates'
     file: '/build/composer.yml'
 
 
