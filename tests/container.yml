@@ -1,50 +1,43 @@
-
-#
-# same as upstream, except:
-# - added $SUB_IMAGE_NAME variable to comply with build.yml
-# - the report/grep stuff, since we are not on ultimate
-#   edition and it won't show in MRs
-#
+# Scan with Trivy
 .container_scanning:
   stage: test
-  interruptible: true
   image:
-    name: registry.gitlab.com/gitlab-org/security-products/analyzers/klar
-    entrypoint: []
+    name: aquasec/trivy:0.12.0
+    entrypoint: [""]
+
+  allow_failure: true
+  interruptible: true
   variables:
-    GIT_STRATEGY: fetch
-    CS_MAJOR_VERSION: latest
-    # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here with a specific image
-    # to enable container scanning to run offline, or to provide a consistent list of vulnerabilities for integration testing purposes
-    CLAIR_DB_IMAGE_TAG: "latest"
-    CLAIR_DB_IMAGE: "arminc/clair-db:$CLAIR_DB_IMAGE_TAG"
-    # Override the GIT_STRATEGY variable in your `.gitlab-ci.yml` file and set it to `fetch` if you want to provide a `clair-whitelist.yml`
-    # file. See https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
-    # for details
     CI_APPLICATION_REPOSITORY: "$CI_REGISTRY_IMAGE$SUB_IMAGE_NAME"
     CI_APPLICATION_TAG: "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
-    CLAIR_OUTPUT: High
-    #CLAIR_VULNERABILITIES_DB_URL:
-    DOCKER_USER: "$CI_REGISTRY_USER"
-    DOCKER_PASSWORD: "$CI_REGISTRY_PASSWORD"
-    CLAIR_DB_CONNECTION_STRING: "postgresql://postgres:password@clair-vulnerabilities-db:5432/postgres?sslmode=disable&statement_timeout=60000"
-  allow_failure: true
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_AUTH_URL: "$CI_REGISTRY"
+    TRIVY_SEVERITY: "HIGH,CRITICAL"
   services:
-    - name: $CLAIR_DB_IMAGE
-      alias: clair-vulnerabilities-db
+    - name: docker:stable-dind
   script:
-    # the kubernetes executor currently ignores the Docker image entrypoint value, so the start.sh script must
-    # be explicitly executed here in order for this to work with both the kubernetes and docker executors
-    # see this issue for more details https://gitlab.com/gitlab-org/gitlab-runner/issues/4125
-    - /container-scanner/start.sh | ( grep --color=always "Unapproved" -A 9999 -B 9999 && exit 1 || exit 0 )
-
+    - '###'
+    - '### Documentation: @TODO ###'
+    - '###'
+    - trivy --version
+    - echo "# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy client --exit-code 0 --quiet ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} > trivy_container_report.txt
+    - trivy client --exit-code 0 --quiet  --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy client --exit-code 1 --quiet ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+  cache: {}
   artifacts:
+    when: always
+    expire_in: 6 mos
+    paths:
+      - trivy_container_report.txt
+      - ./trivy_container_report.xml
     reports:
-      container_scanning: gl-container-scanning-report.json
+      junit: ./trivy_container_report.xml
   dependencies: []
   only:
     refs:
       - branches
-
-
-#| sed -n -e '/ Unapproved \| Medium/,/+$/ p'
+  except:
+    variables:
+      - $CONTAINER_SCANNING_DISABLED
