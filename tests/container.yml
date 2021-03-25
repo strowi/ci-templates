@@ -22,8 +22,8 @@
     - '###'
     - trivy --version
     - echo "# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - trivy client --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - trivy client --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    - trivy --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
   cache:
     paths:
       - .trivycache/
