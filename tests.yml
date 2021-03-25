@@ -1,6 +1,5 @@
 include:
-  # - project: 'strowi/ci-templates'
-  #   file: '/tests/dgoss.yml'
-  - local: '/tests/container.yml'
-  - local: '/tests/dgoss.yml'
-
+  - project: 'strowi/ci-templates'
+    file: '/tests/dgoss.yml'
+  - project: 'strowi/ci-templates'
+    file: '/tests/container.yml'
