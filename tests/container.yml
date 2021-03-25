@@ -4,8 +4,6 @@
   image: docker:stable
   services:
     - name: docker:dind
-      entrypoint: ["env", "-u", "DOCKER_HOST"]
-      command: ["dockerd-entrypoint.sh"]
   allow_failure: true
   interruptible: true
   variables:
