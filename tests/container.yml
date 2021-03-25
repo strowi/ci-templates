@@ -30,9 +30,9 @@
     - wget --no-verbose https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz -O - | tar -zxvf -
     - ./trivy --version
     - echo "# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - ./trivy client --exit-code 0 --quiet ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} > trivy_container_report.txt
-    - ./trivy client --exit-code 0 --quiet  --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - ./trivy client --exit-code 1 --quiet ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    - ./trivy --quiet --exit-code 0 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} > trivy_container_report.txt
+    - ./trivy --quiet --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - ./trivy --quiet --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
   cache: {}
   artifacts:
     when: always
