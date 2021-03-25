@@ -34,6 +34,7 @@
   }
 
   # release the image "$1" as "*:latest"
+  # release as tag if git tag returns a tag
   function release_latest() {
 
     docker_setup
@@ -44,7 +45,14 @@
 
     docker pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     docker tag  "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "${CI_APPLICATION_REPOSITORY}:latest"
+
+
     docker push "${CI_APPLICATION_REPOSITORY}:latest"
+
+    # push git-tag too
+    test -n "${CI_COMMIT_TAG}" \
+      && docker tag  "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}" \
+      && docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}"
 
     echo "##"
   }
