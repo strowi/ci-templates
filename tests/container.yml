@@ -22,9 +22,9 @@
   script:
     - '# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}'
     - trivy --version
-    - trivy client --remote=https://trivy.chefkoch.net --exit-code 0 "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - trivy client --remote=https://trivy.chefkoch.net --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - trivy client --remote=https://trivy.chefkoch.net --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    - trivy --exit-code 0 "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
   cache:
     paths:
       - .trivycache/
