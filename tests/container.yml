@@ -4,7 +4,6 @@
   image:
     name: aquasec/trivy:0.16.0
     entrypoint: [""]
-<<<<<<< HEAD
   services:
     - name: docker:stable-dind
   allow_failure: true
@@ -14,49 +13,24 @@
     # DOCKER_DRIVER: overlay2
     # See https://github.com/docker-library/docker/pull/166
     # DOCKER_TLS_CERTDIR: ""
-=======
-
-  allow_failure: true
-  interruptible: true
-  variables:
->>>>>>> 5a2be1e5c1becc2db7841969fc3bad852c83bbc7
     CI_APPLICATION_REPOSITORY: "$CI_REGISTRY_IMAGE$SUB_IMAGE_NAME"
     CI_APPLICATION_TAG: "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     TRIVY_USERNAME: "$CI_REGISTRY_USER"
     TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
     TRIVY_AUTH_URL: "$CI_REGISTRY"
     TRIVY_SEVERITY: "HIGH,CRITICAL"
-<<<<<<< HEAD
   script:
     - '# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}'
     - trivy --version
     - trivy client --remote=https://trivy.chefkoch.net --exit-code 0 "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
     - trivy client --remote=https://trivy.chefkoch.net --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
     - trivy client --remote=https://trivy.chefkoch.net --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
-=======
-  services:
-    - name: docker:stable-dind
-  script:
-    - '###'
-    - '### Container Scanning with trivy'
-    - '###'
-    - trivy --version
-    - echo "# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - trivy --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
-    - trivy --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
->>>>>>> 5a2be1e5c1becc2db7841969fc3bad852c83bbc7
   cache:
     paths:
       - .trivycache/
   artifacts:
     when: always
-<<<<<<< HEAD
     expire_in: 1 week
-=======
-    expire_in: 3 mos
-    paths:
-      - ./trivy_container_report.txt
->>>>>>> 5a2be1e5c1becc2db7841969fc3bad852c83bbc7
     reports:
       junit: ./trivy_container_report.xml
   dependencies: []
