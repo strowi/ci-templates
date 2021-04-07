@@ -1,17 +1,30 @@
-
 .dgoss_test: &dgoss_test |
 
   # setup docker with registry credentials
-  # setup image-name+tags to build
   function docker_setup(){
 
     echo "# Activating Docker BuildKit"
     export DOCKER_BUILDKIT=1
 
     echo "# Running Docker Login"
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    echo "  - User:     ${CI_REGISTRY_USER}"
+    echo "  - Registry: ${CI_REGISTRY}"
 
-    echo ""
+    test -n "${CI_REGISTRY_USER}" \
+      && ( echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin )  \
+      || echo "  X no CI_REGISTRY_USER defined"
+
+    # gitlab dependency proxy
+    echo "  - User:     ${CI_DEPENDENCY_PROXY_USER}"
+    echo "  - Registry: ${CI_DEPENDENCY_PROXY_SERVER}"
+
+    test -n "${CI_DEPENDENCY_PROXY_USER}" \
+      && ( echo "$CI_DEPENDENCY_PROXY_PASSWORD" | docker login -u "$CI_DEPENDENCY_PROXY_USER" "$CI_DEPENDENCY_PROXY_SERVER" --password-stdin )  \
+      || echo "  X no CI_DEPENDENCY_PROXY_USER defined"
+
+    echo "##"
+
+
   }
 
   # test image with dgoss
@@ -19,15 +32,23 @@
   function dgoss_run(){
     docker_setup
 
+    echo "###"
+    echo "### Documentation: https://git.chefkoch.net/sys/ci/templates/-/blob/master/docs/tests_dgoss.md ###"
+    echo "###"
+
     echo "# setting up dgoss:"
 
-    echo "  GOSS_OPTS = --format junit + \$GOSS_OPTS"
-    echo "  GOSS_FILES_STRATEGY = cp + \$GOSS_FILES_STRATEGY"
+    echo "  GOSS_OPTS = $GOSS_OPTS"
+    echo "  GOSS_FILES_STRATEGY = $GOSS_FILES_STRATEGY"
     echo ""
-    echo "  running dgoss run ${@} > goss.xml"
+    echo "  running dgoss run ${@} |tee goss.xml"
     echo ""
 
-    dgoss run ${@} > goss.xml
+    export GOSS_OPTS="$GOSS_OPTS"
+    export GOSS_FILES_STRATEGY="$GOSS_FILES_STRATEGY"
+    export GOSS_SLEEP="$GOSS_SLEEP"
+
+    dgoss run ${@} |tee -a goss.xml
 
     echo "# end dgoss setup"
   }
@@ -37,12 +58,14 @@
   interruptible: true
   image: "registry.gitlab.com/strowi/dgoss:latest"
   services:
-    - docker:stable-dind
+    - name: "docker:stable-dind"
   variables:
     GOSS_OPTS: --format junit
     GOSS_FILES_STRATEGY: cp
+    GOSS_SLEEP: 3s
   before_script:
     - *dgoss_test
   artifacts:
+    expire_in: 1 mos
     reports:
       junit: goss.xml
