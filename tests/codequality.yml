@@ -2,7 +2,6 @@ code_quality:
   stage: test
   # pin to a version matching the dind service, just to be safe
   image: docker:19.03.5
-  cache: {}
   interruptible: true
   allow_failure: true
   services:
@@ -11,30 +10,50 @@ code_quality:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.6"
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.22"
   script:
+    - export SOURCE_CODE=$PWD
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
+    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
+      function propagate_env_vars() {
+        CURRENT_ENV=$(printenv)
+
+        for VAR_NAME; do
+          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
+        done
+      }
     - docker pull --quiet "$CODE_QUALITY_IMAGE"
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
+    - |
+      docker run \
+        $(propagate_env_vars \
+          SOURCE_CODE \
+          TIMEOUT_SECONDS \
+          CODECLIMATE_DEBUG \
+          CODECLIMATE_DEV \
+          REPORT_STDOUT \
+          REPORT_FORMAT \
+          ENGINE_MEMORY_LIMIT_BYTES \
+        ) \
+        --volume "$PWD":/code \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
         "$CODE_QUALITY_IMAGE" /code
+  cache: {}
+  dependencies: []
+  needs: []
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
     expire_in: 1 week
-  dependencies: []
-  only:
-    refs:
-      - branches
-      - tags
-  except:
-    variables:
-      - $CODE_QUALITY_DISABLED
-
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: always
+    - when: never
+  tags:
+    - codequality
