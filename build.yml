@@ -1,5 +1,4 @@
 include:
-  - project: 'strowi/ci-templates'
-    file: '/build/docker.yml'
+  - local: '/build/docker.yml'
 
 

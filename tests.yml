@@ -1,5 +1,7 @@
 include:
-  - project: 'strowi/ci-templates'
-    file: '/tests/dgoss.yml'
-  - project: 'strowi/ci-templates'
-    file: '/tests/container.yml'
+  - local: '/tests/Jobs/GPG-Keys.yml'
+  - local: '/tests/dgoss.yml'
+  - local: '/tests/Security/Container-Scanning.gitlab-ci.yml'
+  - local: '/tests/Security/Secret-Detection.gitlab-ci.yml'
+  - template: 'Security/Dependency-Scanning.gitlab-ci.yml'
+

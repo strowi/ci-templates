@@ -1,0 +1,49 @@
+#
+## CK-customized from https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml
+#
+# Scan with trivy
+#
+.container_scanning:
+  stage: test
+  image:
+    name: aquasec/trivy:0.16.0
+    entrypoint: [""]
+  services:
+    - name: docker:stable-dind
+      alias: docker
+  allow_failure: true
+  interruptible: true
+  variables:
+    CI_APPLICATION_REPOSITORY: "$CI_REGISTRY_IMAGE$SUB_IMAGE_NAME"
+    CI_APPLICATION_TAG: "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_AUTH_URL: "$CI_REGISTRY"
+    TRIVY_SEVERITY: "HIGH,CRITICAL"
+  script:
+    - '###'
+    - '### Container Scanning with trivy'
+    - '### Documentation: https://git.chefkoch.net/sys/ci/templates/-/blob/master/docs/tests_container.md ###'
+    - '###'
+    - '# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}'
+    - trivy --version
+    - trivy client --remote=https://trivy.chefkoch.net --exit-code 0 "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy client --remote=https://trivy.chefkoch.net --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_container_report.xml "${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
+    - trivy client --remote=https://trivy.chefkoch.net --exit-code 1 ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+  cache:
+    paths:
+      - .trivycache/
+  artifacts:
+    when: always
+    expire_in: 3 mos
+    paths:
+      - ./trivy_container_report.txt
+    reports:
+      junit: ./trivy_container_report.xml
+  dependencies: []
+  rules:
+    - if: '$CONTAINER_SCANNING_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: always
+    - when: never
