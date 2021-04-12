@@ -6,7 +6,7 @@
   ],
   "fetchReleaseNotes": true,
   "separateMajorMinor": false,
-  "assignees": ["@roman.van-gemmeren"],
+  "assignees": ["@strowi"],
   "prHourlyLimit": "30",
   "gitlabci": {
     "fileMatch": [
