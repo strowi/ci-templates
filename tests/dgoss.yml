@@ -33,7 +33,7 @@
     docker_setup
 
     echo "###"
-    - '### Documentation: https://gitlab.com/strowi/ci-templates/ ###'
+    echo '### Documentation: https://gitlab.com/strowi/ci-templates/ ###'
     echo "###"
 
     echo "# setting up dgoss:"
