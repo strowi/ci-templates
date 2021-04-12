@@ -10,10 +10,9 @@
   "prHourlyLimit": "30",
   "gitlabci": {
     "fileMatch": [
-      "^(build|gitlab-ci)?.+\\.y(a)?ml$",
-      "^tests/(Jobs|Security)?.+\\.y(a)?ml$",
-      "^gitlab-ci/.+\\.y(a)?ml$",
-      ".gitlab-ci.yml"
+      "^build.+\\.y(a)?ml$",
+      "^tests/.+\\.y(a)?ml$",
+      "\\.gitlab-ci\\.y(a)?ml$"
     ]
   },
   "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}",
