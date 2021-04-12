@@ -106,8 +106,8 @@
     echo "# waiting for kubeconfig to be available"
     until KUBECONFIG=$(k3d kubeconfig merge -d -s); do echo "# waiting for k3d to be ready..." && sleep 3; done
 
-    echo "# fixing up kubeconfig for k8s-inception"
-    sed -i 's/0.0.0.0/127.0.0.1/g' ${KUBECONFIG}
+    # echo "# fixing up kubeconfig for k8s-inception"
+    # sed -i 's/0.0.0.0/127.0.0.1/g' ${KUBECONFIG}
 
     echo "# waiting for coredns to be ready..."
     until COREDNS=$(kubectl rollout status deployment/coredns -n kube-system) ; do echo "# Waiting for coredns..." && sleep 3; done
