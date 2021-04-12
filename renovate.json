@@ -1,0 +1,40 @@
+{
+  "extends": [
+    "config:base",
+    ":rebaseStalePrs",
+    ":labels(renovate)"
+  ],
+  "fetchReleaseNotes": true,
+  "separateMajorMinor": false,
+  "assignees": ["@roman.van-gemmeren"],
+  "prHourlyLimit": "30",
+  "gitlabci": {
+    "fileMatch": [
+      "^(build|gitlab-ci)?.+\\.y(a)?ml$",
+      "^tests/(Jobs|Security)?.+\\.y(a)?ml$",
+      "^gitlab-ci/.+\\.y(a)?ml$",
+      ".gitlab-ci.yml"
+    ]
+  },
+  "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}",
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": ["major"],
+      "labels": ["renovate", "major"],
+      "groupName": "all major updates",
+      "groupSlug": "all-major-updates"
+    },
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "labels": ["renovate", "minor"],
+      "groupName": "all minor dependencies",
+      "groupSlug": "all-minor-patch"
+    }
+  ]
+}
