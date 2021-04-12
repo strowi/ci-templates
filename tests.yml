@@ -1,5 +1,5 @@
 include:
-  - local: '/tests/Jobs/GPG-Keys.yml'
+  # - local: '/tests/Jobs/GPG-Keys.yml'
   - local: '/tests/dgoss.yml'
   - local: '/tests/Security/Container-Scanning.gitlab-ci.yml'
   - local: '/tests/Security/Secret-Detection.gitlab-ci.yml'

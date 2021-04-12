@@ -33,7 +33,7 @@
     docker_setup
 
     echo "###"
-    echo "### Documentation: https://git.chefkoch.net/sys/ci/templates/-/blob/master/docs/tests_dgoss.md ###"
+    - '### Documentation: https://gitlab.com/strowi/ci-templates/ ###'
     echo "###"
 
     echo "# setting up dgoss:"

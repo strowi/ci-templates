@@ -23,7 +23,7 @@
   script:
     - '###'
     - '### Container Scanning with trivy'
-    - '### Documentation: https://git.chefkoch.net/sys/ci/templates/-/blob/master/docs/tests_container.md ###'
+    - '### Documentation: https://gitlab.com/strowi/ci-templates/ ###'
     - '###'
     - '# scanning ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}'
     - trivy --version
