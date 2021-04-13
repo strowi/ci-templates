@@ -1,1 +1,39 @@
-global.json
+{
+  "extends": [
+    "config:base",
+    ":rebaseStalePrs",
+    ":labels(renovate)"
+  ],
+  "fetchReleaseNotes": true,
+  "separateMajorMinor": false,
+  "assignees": ["@strowi"],
+  "prHourlyLimit": "30",
+  "gitlabci": {
+    "fileMatch": [
+      "^build.+\\.y(a)?ml$",
+      "^tests/.+\\.y(a)?ml$",
+      "\\.gitlab-ci\\.y(a)?ml$"
+    ]
+  },
+  "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}",
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": ["major"],
+      "labels": ["renovate", "major"],
+      "groupName": "all major updates",
+      "groupSlug": "all-major-updates"
+    },
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "labels": ["renovate", "minor"],
+      "groupName": "all minor dependencies",
+      "groupSlug": "all-minor-patch"
+    }
+  ]
+}
