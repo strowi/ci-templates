@@ -3,6 +3,7 @@ include:
 
 stages:
   - test
+  - renovate
 
 .renovate:
   variables:
