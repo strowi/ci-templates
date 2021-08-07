@@ -1,5 +1,4 @@
 .renovate:
-  stage: test
   variables:
     RENOVATE_GIT_AUTHOR: "${GITLAB_USER_NAME} <${GITLAB_USER_EMAIL}>"
     RENOVATE_DRY_RUN: "true"
@@ -22,3 +21,4 @@
 
 renovate:
   extends: .renovate
+  stage: test
