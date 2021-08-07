@@ -23,6 +23,7 @@ stages:
       --dry-run "${RENOVATE_DRY_RUN}"
       "${CI_PROJECT_PATH}"
   only:
+    - master
     - schedules
 
 renovate:
