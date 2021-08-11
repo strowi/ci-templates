@@ -13,6 +13,8 @@ stages:
   image:
     name: renovate/renovate
     entrypoint: [""]
+  depends_on: []
+  needs: []
   script:
     - >
       renovate
