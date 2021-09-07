@@ -8,6 +8,4 @@ These are templates and useful includes for CK-specific `.gitlab-ci.yml` pipelin
 * [docs/tests.md](docs/tests.md)
 * [docs/danger.md](docs/danger.md)
 
-It might be useful to create a separate /dev/templates for dev-related stuff.
-
 Try not to use tags on these template-jobs, so they can be used globally.
