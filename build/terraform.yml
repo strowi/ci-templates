@@ -1,0 +1,127 @@
+variables:
+  SNAP_USER_COMMON: ${CI_PROJECT_DIR}
+  PLAN: plan.tfplan
+  PLAN_JSON: tfplan.json
+  TERRAFORM_TAG: latest
+
+image:
+  name: "registry.gitlab.com/strowi/ci-templates/terraform:latest"
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+
+# terraform init with ci user/pass + convert report alias
+.tf: &tf |
+  function tfi(){
+    cd ${TF_ROOT}
+    tfswitch
+    terraform --version
+    terraform init \
+    -backend-config=username="gitlab-ci-token"  \
+    -backend-config=password="${CI_JOB_TOKEN}" \
+    -reconfigure
+  }
+  alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
+  function tfdocs() {
+    for d in $TF_ROOT_DIRS; do
+      terraform-docs md ./$d > ./$d/readme.md
+      if [ $? -eq 0 ] ; then
+        git add "./$d/readme.md"
+      fi
+    done
+    for d in modules/*; do
+      test -d ./$d && terraform-docs md ./$d > ./$d/readme.md
+      if [ $? -eq 0 ] ; then
+        git add "./$d/readme.md"
+      fi
+    done
+  }
+before_script:
+  - mkdir -p ~/.ssh && ssh-keyscan -p 22 gitlab.com > ~/.ssh/known_hosts
+  - eval "$(ssh-agent -s)"
+  - echo "$CI_SSH_PRIVATE_KEY" | base64 -d | ssh-add - >/dev/null
+  - echo "$CI_GPG_PRIVATE_KEY" | base64 -d | gpg --import
+  - git crypt unlock
+  - *tf
+
+.fmt:
+  stage: format
+  script:
+    - git config --global user.email "ci@hasnoname.de"
+    - git config --global user.name "ci"
+    - git checkout $CI_COMMIT_REF_NAME
+    - git remote rm origin && git remote add origin "ssh://git@gitlab.com:/${CI_PROJECT_PATH}.git"
+    - terraform fmt -check -recursive ./ || ( terraform fmt -recursive ./  && git commit -m "[ci] Terraform formatting" . )
+    - tfdocs
+    - git commit -m "[ci] Terraform docs" . || true
+    - git push --set-upstream origin $CI_COMMIT_REF_NAME -o ci.skip
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      when: always
+
+.checkov:
+  stage: validate
+  image:
+    # TODO: mirror image
+    name: bridgecrew/checkov:2.0.374
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  allow_failure: true
+  needs: []
+  cache:
+    key: "${TF_ROOT}-${CI_COMMIT_REF_SLUG}"
+    paths:
+      - ${TF_ROOT}/.terraform
+      - .terraform.versions
+  artifacts:
+    when: always
+    reports:
+      junit: $TF_ROOT/checkov.xml
+  before_script: []
+  script:
+    - cd ${TF_ROOT}
+    - '#'
+    - '# https://github.com/bridgecrewio/checkov'
+    - '#'
+    - checkov -s -d .
+    - checkov -d . -o junitxml > checkov.xml
+
+.plan:
+  stage: plan
+  allow_failure: false
+  cache:
+    key: "${TF_ROOT}-${CI_COMMIT_REF_SLUG}"
+    paths:
+      - ${TF_ROOT}/.terraform
+      - .terraform.versions
+  artifacts:
+    name: ${TF_ROOT}
+    when: always
+    paths:
+      - $TF_ROOT/$PLAN
+    reports:
+      terraform: $TF_ROOT/$PLAN_JSON
+  script:
+    - tfi
+    - terraform validate
+    - terraform plan -out=$PLAN
+    - terraform show --json $PLAN | convert_report > $PLAN_JSON
+
+.deploy:
+  stage: apply
+  script:
+    - tfi
+    - terraform apply -auto-approve
+  dependencies:
+    - plan
+  cache:
+    key: "${TF_ROOT}-${CI_COMMIT_REF_SLUG}"
+    paths:
+      - ${TF_ROOT}/.terraform
+      - .terraform.versions
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+    - when: never
