@@ -1,0 +1,56 @@
+#
+## CK-customized from https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Security/Depdendency-Scanning.gitlab-ci.yml
+#
+scan:deps:
+  stage: test
+  services: []
+  image:
+    name: "aquasec/trivy:0.18.3"
+    entrypoint: [""]
+  allow_failure: true
+  interruptible: true
+  variables:
+    TRIVY_SEVERITY: "HIGH,CRITICAL"
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_VULN_TYPE: "library"
+  before_script: []
+  script:
+    - '###'
+    - '### Dependency Scanning with trivy'
+    - '### Documentation: https://gitlab.com/strowi/ci-templates/-/blob/master/docs/tests_repo.md#with-trivy-stage-test ###'
+    - '###'
+    - '# scanning fs ./'
+    - trivy --version
+    - trivy --cache-dir .trivycache/ --no-progress fs --exit-code 0 --format template --template "@/contrib/junit.tpl" -o trivy_dcontainer_report.xml .
+    - trivy --cache-dir .trivycache/ --no-progress fs --exit-code 1 .
+  cache:
+    paths:
+      - .trivycache/
+  needs: []
+  dependencies: []
+  artifacts:
+    when: always
+    expire_in: 3 mos
+    paths:
+      - ./trivy_repo_report.txt
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $REPO_SCANNING_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      exists:
+        - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+        - '{poetry.lock,*/poetry.lock,*/*/poetry.lock}'
+        - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+        - '{Cargo.lock,*/Cargo.lock,*/*/Cargo.lock}'
+        - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+        - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+        - '{Pipfile.lock,*/Pipfile.lock,*/*/Pipfile.lock}'
+        - '{*.jar,*/*.jar,*/*/*.jar}'
+        - '{*.war,*/*.war,*/*/*.war}'
+        - '{*.ear,*/*.ear,*/*/*.ear}'
+      when: always
+    - when: never
+  retry:
+    max: 2
+    when: runner_system_failure
