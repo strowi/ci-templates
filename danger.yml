@@ -1,0 +1,19 @@
+.danger:
+  allow_failure: true
+  image: registry.gitlab.com/strowi/danger:latest
+  variables:
+    DANGER_GITLAB_HOST: gitlab.com
+    DANGER_GITLAB_API_BASE_URL: https://gitlab.com/api/v4
+  needs: []
+  dependencies: []
+  before_script: []
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$DANGER_GITLAB_API_TOKEN && ( $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH )'
+      exists:
+        - Dangerfile
+      when: always
+    - when: never
+  script:
+    - danger --fail-on-errors=true

@@ -1,0 +1,48 @@
+.pluto_test: &pluto_test |
+
+  # test manifests with pluto
+  # for deprecated api compatibility
+  function pluto_run(){
+
+    echo "###"
+    echo "### Documentation: https://gitlab.com/strowi/ci-templates/-/blob/master/docs/tests_pluto.md ###"
+    echo "###"
+
+    echo "# checking manifests for deprecations and removals:"
+
+    for CHART in $(find . -iname "chart.yaml" -exec dirname {} \;); do
+
+      echo "# checking manifests: ${CHART}"
+      test -d ${CHART} && /pluto detect-files -d ${CHART} --target-versions k8s=${K8S_VERSION}
+    done
+
+
+    echo "  KUBE_MANIFESTS_DIR = $KUBE_MANIFESTS_DIR"
+    echo ""
+    test -d ${KUBE_MANIFESTS_DIR:-$PWD/manifests} && /pluto detect-files -d ${KUBE_MANIFESTS_DIR} --target-versions k8s=${K8S_VERSION}
+
+    echo "# end pluto scan"
+  }
+
+scan:manifests:
+  stage: test
+  image: "quay.io/fairwinds/pluto:v5.0.0"
+  interruptible: true
+  allow_failure: true
+  cache: {}
+  needs: []
+  dependencies: []
+  environment:
+    name: ci
+  variables:
+    KUBE_MANIFESTS_DIR: ./manifests
+    K8S_VERSION: v1.20.5
+  script:
+    - *pluto_test
+    - pluto_run
+  rules:
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+      exists:
+        - $KUBE_MANIFESTS_DIR/**
+      when: always
+    - when: never
