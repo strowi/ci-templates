@@ -87,7 +87,7 @@ before_script:
     - git commit -m "[ci] Terraform docs" . || true
     - git push --set-upstream origin $CI_COMMIT_REF_NAME -o ci.skip
   rules:
-    - if: '$CI_COMMIT_BRANCH != "" && CI_SSH_PRIVATE_KEY != ""'
+    - if: $CI_COMMIT_BRANCH != "" && CI_SSH_PRIVATE_KEY != ""
       when: always
 
 .checkov:
