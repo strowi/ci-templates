@@ -5,7 +5,7 @@ variables:
   TERRAFORM_TAG: latest
 
 image:
-  name: "registry.gitlab.com/strowi/ci-templates/terraform:latest"
+  name: "registry.gitlab.com/strowi/terraform:latest"
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -40,9 +40,6 @@ image:
 
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
-  image:
-    name: registry.gitlab.com/strowi/terraform:latest
-    entrypoint: [""] # Do not run the default entrypoint
   script: "/scripts/ci/diff.sh" # Do not change
   variables:
     # Path to the Terraform directory or JSON/plan file. Either `path` or `config_file` is required.
