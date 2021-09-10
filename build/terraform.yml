@@ -72,8 +72,7 @@ before_script:
   - mkdir -p ~/.ssh && ssh-keyscan -p 22 gitlab.com > ~/.ssh/known_hosts
   - eval "$(ssh-agent -s)"
   - echo "$CI_SSH_PRIVATE_KEY" | base64 -d | ssh-add - >/dev/null
-  - echo "$CI_GPG_PRIVATE_KEY" | base64 -d | gpg --import
-  # - git crypt unlock
+  - echo "$CI_GPG_PRIVATE_KEY" | base64 -d | gpg --import && crypt unlock
   - *tf
 
 .fmt:
