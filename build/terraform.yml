@@ -41,15 +41,12 @@ image:
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
   image:
-    name: registry.gitlab.com/strowi/terraform:latest # Use a specific version of the image instead of latest if locking the image is preferred
+    name: registry.gitlab.com/strowi/terraform:latest
     entrypoint: [""] # Do not run the default entrypoint
-  script:
-    - tfi
-    - "/scripts/ci/diff.sh" # Do not change
+  script: "/scripts/ci/diff.sh" # Do not change
   variables:
-    GIT_SSH_KEY: $CI_SSH_PRIVATE_KEY
     # Path to the Terraform directory or JSON/plan file. Either `path` or `config_file` is required.
-    path: "${TF_ROOT}"
+    path: "${TF_ROOT}/${PLAN}"
     #
     # Flags to pass to the 'terraform plan' command, e.g. `"-var-file=my.tfvars -var-file=other.tfvars"`. Applicable when path is a Terraform directory.
     # terraform_plan_flags:
@@ -71,6 +68,7 @@ image:
     #  - `'{"always": true}'`: always post a comment.
     #  - `'{"percentage_threshold": 0}'`: absolute percentage threshold that triggers a comment. For example, set to 1 to post a comment if the cost estimate changes by more than plus or minus 1%.
     post_condition: '{"has_diff": true}'
+
 
 
 before_script:
