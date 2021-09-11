@@ -75,11 +75,11 @@ image:
     post_condition: '{"has_diff": true}'
 
 before_script:
-  - test -f ./secrets && source ./secrets
   - mkdir -p ~/.ssh && ssh-keyscan -p 22 gitlab.com > ~/.ssh/known_hosts
   - eval "$(ssh-agent -s)"
   - echo "$CI_SSH_PRIVATE_KEY" | base64 -d | ssh-add - >/dev/null || echo "no ssh key specified"
   - echo "$CI_GPG_PRIVATE_KEY" | base64 -d | gpg --import && crypt unlock || echo "no gpg key specified"
+  - test -f ./secrets && source ./secrets
   - *tf
 
 .fmt:
