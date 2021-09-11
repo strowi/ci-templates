@@ -82,7 +82,7 @@ before_script:
   - git crypt unlock || echo "no gpg key specified"
   - test -f ./secrets && source ./secrets
   - *tf
-<
+
 .fmt:
   stage: format
   script:
