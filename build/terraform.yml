@@ -68,7 +68,7 @@ image:
     # config_file:
     #
     # Show unsupported resources, some of which might be free, at the bottom of the Infracost output (default is false).
-    show_skipped: true
+    show_skipped: "true"
     #
     # A JSON string describing the condition that triggers pull request comments, can be one of these:
     #  - `'{"has_diff": true}'`: only post a comment if there is a diff. This is the default behavior.
