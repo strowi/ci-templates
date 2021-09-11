@@ -44,8 +44,6 @@ image:
       > "${PLAN_JSON}"
   }
 
-
-
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
   script:
@@ -76,9 +74,8 @@ image:
     #  - `'{"percentage_threshold": 0}'`: absolute percentage threshold that triggers a comment. For example, set to 1 to post a comment if the cost estimate changes by more than plus or minus 1%.
     post_condition: '{"has_diff": true}'
 
-
-
 before_script:
+  - test -f ./secrets && source ./secrets
   - mkdir -p ~/.ssh && ssh-keyscan -p 22 gitlab.com > ~/.ssh/known_hosts
   - eval "$(ssh-agent -s)"
   - echo "$CI_SSH_PRIVATE_KEY" | base64 -d | ssh-add - >/dev/null || echo "no ssh key specified"
