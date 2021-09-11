@@ -40,7 +40,9 @@ image:
 
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
-  script: "/scripts/ci/diff.sh" # Do not change
+  script:
+    - tfi
+    - /scripts/ci/diff.sh # Do not change
   variables:
     # Path to the Terraform directory or JSON/plan file. Either `path` or `config_file` is required.
     path: "${TF_ROOT}/${PLAN}"
