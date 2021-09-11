@@ -140,7 +140,8 @@ before_script:
     - terraform validate
     - terraform plan -out=$PLAN
     - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-    - terraform show --json $PLAN | convert_report > $PLAN_JSON
+    - terraform show --json $PLAN
+    #| convert_report > $PLAN_JSON
 
 .deploy:
   stage: apply
