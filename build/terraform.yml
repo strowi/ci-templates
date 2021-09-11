@@ -1,7 +1,7 @@
 variables:
   SNAP_USER_COMMON: ${CI_PROJECT_DIR}
-  PLAN: plan.tfplan
-  PLAN_JSON: tfplan.json
+  PLAN: plan.cache
+  PLAN_JSON: plan.json
   TERRAFORM_TAG: latest
 
 image:
@@ -22,7 +22,7 @@ image:
     -backend-config=password="${CI_JOB_TOKEN}" \
     -reconfigure
   }
-  alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
+
   function tfdocs() {
     for d in $TF_ROOT_DIRS; do
       terraform-docs md ./$d > ./$d/readme.md
@@ -37,6 +37,14 @@ image:
       fi
     done
   }
+
+  convert_report() {
+    terraform show -json "${PLAN}" | \
+      jq -r '(    [.resource_changes[]?.change.actions?] | flatten  ) | {    "create":(map(select(.=="create")) | length),    "update":(map(select(.=="update")) | length),    "delete":(map(select(.=="delete")) | length)  }' \
+      > "${PLAN_JSON}"
+  }
+
+
 
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
@@ -141,9 +149,7 @@ before_script:
     - tfi
     - terraform validate
     - terraform plan -out=$PLAN
-    - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-    - terraform show --json $PLAN
-    #| convert_report > $PLAN_JSON
+    - convert_report
 
 .deploy:
   stage: apply
