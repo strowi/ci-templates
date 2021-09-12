@@ -30,7 +30,6 @@ image:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   allow_failure: true
-  needs: []
   cache:
     key: "${TF_ROOT}-${CI_COMMIT_REF_SLUG}"
     paths:
@@ -40,6 +39,8 @@ image:
     when: always
     reports:
       junit: $TF_ROOT/checkov.xml
+  needs: []
+  dependencies: []
   before_script: []
   script:
     - cd ${TF_ROOT}

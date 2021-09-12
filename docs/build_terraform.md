@@ -6,14 +6,18 @@ is a template you can use.
 This will:
 
 * fmt
-  * terraform-fmt
+  * `terraform format`
   * [terraform-docs](https://terraform-docs.io/)
   * push back those changes to the repository
+    * requires `CI_SSH_PRIVATE_KEY` being set with push access
 * [checkov](https://www.checkov.io/)
   * scan for misconfigurations
   * show those in MR-Widget / Code
 * plan
   * show changes
+* infracost
+  * show cost estimation
+    * requires `INFRACOST_API_KEY` (run `infracost register` to obtain)
 * apply
   * apply changes
 
@@ -26,9 +30,9 @@ the `required_version` of terraform.
 
 ```yaml
 ---
+
 include:
   - project: 'strowi/ci-templates'
-    ref: 'tfs'
     file: '/build/terraform.yml'
   - project: 'strowi/ci-templates'
     file: '/tests.yml'
@@ -37,7 +41,15 @@ stages:
   - generate
   - test
   - plan
+  - cost
   - apply
+
+fmt:
+  stage: generate
+  variables:
+
+    TF_ROOT_DIRS: aws
+  extends: .fmt
 
 checkov:
   extends: .checkov
@@ -45,22 +57,27 @@ checkov:
   parallel:
     matrix:
       - TF_ROOT:
-        - "$TERRAFORM_ROOT1"
-        - "$TERRAFORM_ROOT2"
-
-fmt:
-  stage: generate
-  extends: .fmt
-  variables:
-    TF_ROOT_DIRS: $TERRAFORM_DIR1 $TERRAFORM_DIR2
+        - "ROOT1"
+        - "ROOT2"
 
 plan:
   extends: .plan
   parallel:
     matrix:
       - TF_ROOT:
-        - "$TERRAFORM_ROOT1"
-        - "$TERRAFORM_ROOT2"
+        - "ROOT1"
+        - "ROOT2"
+
+infracost:
+  stage: cost
+  extends: .infracost
+  variables:
+    usage_file: ./infracost-usage.yml
+  parallel:
+    matrix:
+      - TF_ROOT:
+        - "ROOT1"
+        - "ROOT2"
 
 # Separate apply job for manual Terraform as it can be destructive action.
 deploy:
@@ -68,7 +85,6 @@ deploy:
   parallel:
     matrix:
       - TF_ROOT:
-        - "$TERRAFORM_ROOT1"
-        - "$TERRAFORM_ROOT2"
+        - "ROOT1"
+        - "ROOT2"
 ```
-
