@@ -1,6 +1,6 @@
 variables:
   SNAP_USER_COMMON: ${CI_PROJECT_DIR}
-  PLAN: plan.cache
+  PLAN_CACHE: plan.cache
   PLAN_JSON: plan.json
   TERRAFORM_TAG: latest
 
@@ -17,7 +17,7 @@ image:
     - /scripts/ci/diff.sh # Do not change
   variables:
     # Path to the Terraform directory or JSON/plan file. Either `path` or `config_file` is required.
-    path: "./${PLAN}"
+    path: "./${PLAN_CACHE}"
     #
     # Flags to pass to the 'terraform plan' command, e.g. `"-var-file=my.tfvars -var-file=other.tfvars"`. Applicable when path is a Terraform directory.
     # terraform_plan_flags:
@@ -105,13 +105,13 @@ before_script:
     name: ${TF_ROOT}
     when: always
     paths:
-      - $TF_ROOT/$PLAN
+      - $TF_ROOT/$PLAN_CACHE
     reports:
       terraform: $TF_ROOT/$PLAN_JSON
   script:
     - tfi
     - terraform validate
-    - terraform plan -out=$PLAN
+    - terraform plan -out=$PLAN_CACHE
     - convert_report
 
 .deploy:
