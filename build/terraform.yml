@@ -72,21 +72,22 @@ image:
       terraform: $TF_ROOT/$PLAN_JSON
   script:
     - cd $TF_ROOT
+    - tf init
     - tf plan
     - tf plan-json
 
 .deploy:
   stage: apply
-  script:
-    - tfi
-    - terraform apply -auto-approve
-  dependencies:
-    - plan
   cache:
     key: "${TF_ROOT}-${CI_COMMIT_REF_SLUG}"
     paths:
       - ${TF_ROOT}/.terraform
       - .terraform.versions
+  dependencies:
+    - plan
+  script:
+    - tfi
+    - terraform apply -auto-approve
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
