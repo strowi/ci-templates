@@ -10,40 +10,6 @@ image:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
-
-# terraform init with ci user/pass + convert report alias
-.tf: &tf |
-  function tfi(){
-    cd ${TF_ROOT}
-    tfswitch
-    terraform --version
-    terraform init \
-    -backend-config=username="gitlab-ci-token"  \
-    -backend-config=password="${CI_JOB_TOKEN}" \
-    -reconfigure
-  }
-
-  function tfdocs() {
-    for d in $TF_ROOT_DIRS; do
-      terraform-docs md ./$d > ./$d/readme.md
-      if [ $? -eq 0 ] ; then
-        git add "./$d/readme.md"
-      fi
-    done
-    for d in modules/*; do
-      test -d ./$d && terraform-docs md ./$d > ./$d/readme.md
-      if [ $? -eq 0 ] ; then
-        git add "./$d/readme.md"
-      fi
-    done
-  }
-
-  convert_report() {
-    terraform show -json "${PLAN}" | \
-      jq -r '(    [.resource_changes[]?.change.actions?] | flatten  ) | {    "create":(map(select(.=="create")) | length),    "update":(map(select(.=="update")) | length),    "delete":(map(select(.=="delete")) | length)  }' \
-      > "${PLAN_JSON}"
-  }
-
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
   script:
@@ -81,7 +47,6 @@ before_script:
   - echo "$CI_GPG_PRIVATE_KEY" | base64 -d | gpg --import
   - git crypt unlock || echo "no gpg key specified"
   - test -f ./secrets && source ./secrets && export $(cut -d= -f1 ./secrets)
-  - *tf
 
 .fmt:
   stage: format
