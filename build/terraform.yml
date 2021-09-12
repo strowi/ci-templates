@@ -10,12 +10,6 @@ image:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
-# ref: https://gitlab.com/infracost/infracost-gitlab-ci/
-.infracost:
-  script:
-    - cd ${TF_ROOT}
-    - tf cost
-
 .fmt:
   stage: format
   script:
@@ -75,6 +69,12 @@ image:
     - tf plan
     - tf plan-json
 
+# ref: https://gitlab.com/infracost/infracost-gitlab-ci/
+.infracost:
+  script:
+    - cd ${TF_ROOT}
+    - tf cost
+
 .deploy:
   stage: apply
   cache:
@@ -85,9 +85,9 @@ image:
   dependencies:
     - plan
   script:
-    - tfi
-    - terraform apply -auto-approve
+    - cd ${TF_ROOT}
+    - tf apply
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_DEFAULT_BRANCH'
       when: manual
     - when: never
