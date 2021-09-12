@@ -88,6 +88,6 @@ image:
     - cd ${TF_ROOT}
     - tf apply
   rules:
-    - if: '$CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
       when: manual
     - when: never
