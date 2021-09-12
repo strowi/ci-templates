@@ -24,7 +24,7 @@ image:
   rules:
     - if: $CI_SSH_PRIVATE_KEY == null
       when: never
-    - if: $CI_COMMIT_BRANCH
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
 
 .checkov:
