@@ -72,7 +72,6 @@ image:
       terraform: $TF_ROOT/$PLAN_JSON
   script:
     - cd $TF_ROOT
-    - tf init
     - tf plan
     - tf plan-json
 
