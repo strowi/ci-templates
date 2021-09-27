@@ -72,9 +72,12 @@ image:
 
 # ref: https://gitlab.com/infracost/infracost-gitlab-ci/
 .infracost:
+  stage: cost
   script:
     - cd ${TF_ROOT}
     - tf cost
+  depends:
+
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
