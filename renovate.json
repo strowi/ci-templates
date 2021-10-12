@@ -28,6 +28,17 @@
     },
     {
       "matchPackagePatterns": [
+        "^cytopia/yamllint.*",
+        "^bridgecrew/checkov.*"
+      ],
+      "labels": ["linting"],
+      "groupSlug": "linters",
+      "gitLabAutomerge": true,
+      "automerge": true
+
+    },
+    {
+      "matchPackagePatterns": [
         "*"
       ],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
