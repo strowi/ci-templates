@@ -28,8 +28,8 @@
     },
     {
       "matchPackagePatterns": [
-        "^cytopia/yamllint.*",
-        "^bridgecrew/checkov.*"
+        "^cytopia/yamllint",
+        "^bridgecrew/checkov"
       ],
       "labels": ["linting"],
       "groupSlug": "linters",
