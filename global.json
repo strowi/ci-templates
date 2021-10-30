@@ -8,13 +8,6 @@
   "separateMajorMinor": false,
   "assignees": ["@strowi"],
   "prHourlyLimit": "30",
-  "gitlabci": {
-    "fileMatch": [
-      "^build.+\\.y(a)?ml$",
-      "^tests/.+\\.y(a)?ml$",
-      "\\.gitlab-ci\\.y(a)?ml$"
-    ]
-  },
   "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}",
   "packageRules": [
     {
@@ -23,8 +16,8 @@
       ],
       "matchUpdateTypes": ["major"],
       "labels": ["renovate", "major"],
-      "groupName": "all major updates",
-      "groupSlug": "all-major-updates"
+      "groupName": "all major",
+      "groupSlug": "all-major"
     },
     {
       "matchPackagePatterns": [
@@ -32,8 +25,18 @@
       ],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "labels": ["renovate", "minor"],
-      "groupName": "all minor dependencies",
-      "groupSlug": "all-minor-patch"
+      "groupName": "all minor",
+      "groupSlug": "all-minor"
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sENV .*?_VERSION=\"(?<currentValue>.*)\"\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ]
+
 }
