@@ -11,7 +11,8 @@
   "gitlabci": {
     "fileMatch": [
       "^build.+\\.y(a)?ml$",
-      "^tests/.+\\.y(a)?ml$",
+      "^tests.+\\.y(a)?ml$",
+      "^danger.+\\.y(a)?ml$",
       "\\.gitlab-ci\\.y(a)?ml$"
     ]
   },
