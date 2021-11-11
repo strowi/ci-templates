@@ -45,7 +45,8 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "labels": ["renovate", "minor"],
       "groupName": "all minor dependencies",
-      "groupSlug": "all-minor-patch"
+      "groupSlug": "all-minor-patch",
+      "gitLabAutomerge": true
     }
   ]
 }
