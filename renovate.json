@@ -47,6 +47,16 @@
       "groupName": "all minor dependencies",
       "groupSlug": "all-minor-patch",
       "gitLabAutomerge": true
+    },
+    {
+      "matchPackagePatterns": [
+        "hashicorp/terraform"
+      ],
+      "matchUpdateTypes": ["patch"],
+      "labels": ["renovate", "patch"],
+      "groupName": "patch dependencies",
+      "groupSlug": "all-patch-patch",
+      "gitLabAutomerge": true
     }
   ]
 }
