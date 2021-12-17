@@ -50,6 +50,26 @@ image:
     - checkov -s -d .
     - checkov -d . -o junitxml > checkov.xml
 
+
+.kics-iac-sast:
+  stage: validate
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  needs: []
+  dependencies: []
+  before_script: []
+  variables:
+    SAST_ANALYZER_IMAGE: "registry.gitlab.com/gitlab-org/security-products/analyzers/kics:1"
+    SEARCH_MAX_DEPTH: 4
+    SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+  allow_failure: true
+  script:
+    - /analyzer run
+
+
 .plan:
   stage: plan
   allow_failure: false
