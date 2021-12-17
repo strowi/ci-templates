@@ -98,8 +98,9 @@ image:
   script:
     - cd ${TF_ROOT}
     - tf cost
-  dependencies:
-    - plan    
+  # doesn't work with parallel...
+  # dependencies:
+  #   - plan
   # rules:
   #   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   #     when: always
