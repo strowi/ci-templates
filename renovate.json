@@ -50,7 +50,7 @@
     },
     {
       "matchPackagePatterns": [
-        "hashicorp/terraform"
+        "*"
       ],
       "matchUpdateTypes": ["patch"],
       "labels": ["renovate", "patch"],
