@@ -19,7 +19,9 @@ image:
     - if: $CI_SSH_PRIVATE_KEY == null
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
 
 .checkov:
   stage: validate
@@ -98,10 +100,10 @@ image:
     - tf cost
   dependencies:
     - plan    
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
-    - when: never
+  # rules:
+  #   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  #     when: always
+  #   - when: never
 
 .deploy:
   stage: apply
@@ -115,7 +117,7 @@ image:
   script:
     - cd ${TF_ROOT}
     - tf apply
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
-      when: manual
-    - when: never
+  # rules:
+  #   - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
+  #     when: manual
+  #   - when: never
