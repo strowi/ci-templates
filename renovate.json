@@ -42,10 +42,10 @@
       "matchPackagePatterns": [
         "*"
       ],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "pin", "digest"],
       "labels": ["renovate", "minor"],
       "groupName": "all minor dependencies",
-      "groupSlug": "all-minor-patch",
+      "groupSlug": "all-minor",
       "gitLabAutomerge": true
     },
     {
@@ -55,7 +55,7 @@
       "matchUpdateTypes": ["patch"],
       "labels": ["renovate", "patch"],
       "groupName": "patch dependencies",
-      "groupSlug": "all-patch-patch",
+      "groupSlug": "all-patch",
       "gitLabAutomerge": true
     }
   ]
