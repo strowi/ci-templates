@@ -23,6 +23,7 @@
       "matchPackagePatterns": [
         "*"
       ],
+      "excludePackagePatterns": ["^alpine"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "labels": ["renovate", "minor"],
       "groupName": "all minor",
