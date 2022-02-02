@@ -60,7 +60,7 @@
   services:
     - name: "docker:stable-dind"
   variables:
-    GOSS_OPTS: --format-options junit
+    GOSS_OPTS: --format junit
     GOSS_FILES_STRATEGY: cp
     GOSS_SLEEP: 3s
   before_script:
