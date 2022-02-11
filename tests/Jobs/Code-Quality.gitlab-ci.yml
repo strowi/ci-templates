@@ -72,7 +72,7 @@ yamllint:
       when: never
     - if: '$CI_COMMIT_BRANCH'
       rules:
-        exists:
+        - exists:
           - '**yaml'
           - '**yml'
       when: always
