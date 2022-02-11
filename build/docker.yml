@@ -99,7 +99,6 @@
     # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
   }
 
-
 .build:
   image: "docker:stable"
   interruptible: true
@@ -107,4 +106,3 @@
     - docker:stable-dind
   before_script:
     - *image_build
-
