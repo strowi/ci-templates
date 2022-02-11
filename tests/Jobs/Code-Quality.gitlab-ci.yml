@@ -79,5 +79,3 @@ yamllint:
   retry:
     max: 2
     when: runner_system_failure
-  tags:
-    - docker_spot
