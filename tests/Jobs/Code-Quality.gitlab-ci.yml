@@ -71,10 +71,9 @@ yamllint:
     - if: '$CODE_QUALITY_DISABLED || $YAMLLINT_DISABLED'
       when: never
     - if: '$CI_COMMIT_BRANCH'
-      rules:
-        - exists:
-          - '**yaml'
-          - '**yml'
+      exists:
+        - '**yaml'
+        - '**yml'
       when: always
     - when: never
   retry:
