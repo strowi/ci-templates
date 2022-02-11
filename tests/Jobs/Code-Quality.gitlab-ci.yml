@@ -63,7 +63,6 @@ yamllint:
     entrypoint: ['']
   before_script: []
   script:
-    - test -f .yamllint || ( echo "using default yamllintrc" && cat $YAMLLINT > .yamllint )
     - yamllint -s .
   dependencies: []
   needs: []
