@@ -3,6 +3,7 @@ include:
   #- local: '/tests/pluto.yml'
   - local: '/tests/Jobs/Secret-Detection.gitlab-ci.yml'
   # - local: '/tests/Jobs/SAST-IaC.latest.gitlab-ci.yml'
+  - local: '/tests/Jobs/Code-Quality.gitlab-ci.yml'
   - local: '/tests/Security/Container-Scanning.gitlab-ci.yml'
   - template: 'Security/Dependency-Scanning.gitlab-ci.yml'
 
