@@ -20,20 +20,12 @@
   "packageRules": [
     {
       "matchPackagePatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": ["major"],
-      "labels": ["renovate", "major"],
-      "groupName": "all major updates",
-      "groupSlug": "all-major-updates"
-    },
-    {
-      "matchPackagePatterns": [
         "^cytopia/yamllint",
-        "^bridgecrew/checkov"
+        "^bridgecrew/checkov",
+        "^renovate/renovate"
       ],
-      "labels": ["linting"],
-      "groupSlug": "linters",
+      "labels": ["automated", "ci"],
+      "groupSlug": "automated-updates",
       "gitLabAutomerge": true,
       "automerge": true
 
