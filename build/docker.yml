@@ -100,9 +100,9 @@
   }
 
 .build:
-  image: "docker:stable"
+  image: "docker:20.10"
   interruptible: true
   services:
-    - docker:stable-dind
+    - docker:20.10-dind
   before_script:
     - *image_build

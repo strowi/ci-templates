@@ -9,7 +9,7 @@
     name: aquasec/trivy:0.23.0
     entrypoint: [""]
   services:
-    - name: docker:stable-dind
+    - name: docker:20.10-dind
       alias: docker
   allow_failure: true
   interruptible: true
