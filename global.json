@@ -11,6 +11,15 @@
   "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}",
   "packageRules": [
     {
+      "description": "Update references in Markdown files weekly",
+      "matchPaths": [".md"],
+      "commitMessageTopic": "references to {{{depName}}}",
+      "semanticCommitType": "docs",
+      "semanticCommitScope": null,
+      "additionalBranchPrefix": "docs-",
+      "labels": ["renovate", "docs"],
+    },
+    {
       "matchPackagePatterns": [
         "*"
       ],
