@@ -24,7 +24,7 @@
         "^bridgecrew/checkov",
         "^renovate/renovate"
       ],
-      "labels": ["automated", "ci"],
+      "labels": ["renovate", "automated", "ci"],
       "groupSlug": "automated-updates",
       "gitLabAutomerge": true,
       "automerge": true
@@ -45,10 +45,11 @@
         "*"
       ],
       "matchUpdateTypes": ["patch"],
-      "labels": ["renovate", "patch"],
+      "labels": ["renovate", "automated", "patch"],
       "groupName": "patch dependencies",
       "groupSlug": "all-patch",
-      "gitLabAutomerge": true
+      "gitLabAutomerge": true,
+      "automerge": true
     }
   ]
 }
