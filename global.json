@@ -36,7 +36,8 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "labels": ["renovate", "minor"],
       "groupName": "all minor",
-      "groupSlug": "all-minor"
+      "groupSlug": "all-minor",
+      "gitLabAutomerge": true
     }
   ],
   "regexManagers": [
