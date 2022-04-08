@@ -11,7 +11,7 @@ stages:
     RENOVATE_DRY_RUN: "false"
     LOG_LEVEL: "info"
   image:
-    name: renovate/renovate:32.14
+    name: renovate/renovate:32.16
     entrypoint: [""]
   dependencies: []
   needs: []
