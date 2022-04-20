@@ -2,7 +2,8 @@
   "extends": [
     "config:base",
     ":rebaseStalePrs",
-    ":labels(renovate)"
+    ":labels(renovate)",
+    "workarounds:reduceRepologyServerLoad"
   ],
   "fetchReleaseNotes": true,
   "separateMajorMinor": false,
