@@ -73,10 +73,10 @@
     echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}"
     echo "    - ${CI_APPLICATION_REPOSITORY}:latest"
 
-    docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
-      || docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
-      || docker image pull "${CI_APPLICATION_REPOSITORY}:latest" \
-      || true
+    # docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+    #   || docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+    #   || docker image pull "${CI_APPLICATION_REPOSITORY}:latest" \
+    #   || true
 
 
     docker build \
