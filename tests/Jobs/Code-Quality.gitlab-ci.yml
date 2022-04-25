@@ -76,3 +76,18 @@ yamllint:
   retry:
     max: 2
     when: runner_system_failure
+
+
+jsonlint:
+  stage: test
+  image: registry.gitlab.com/pipeline-components/jsonlint:latest
+  before_script: []
+  dependencies: []
+  needs: []
+  script:
+    - |
+      find . -not -path './.git/*' -name '*.json' -type f -print0 |
+      parallel --will-cite -k -0 -n1 jsonlint -q
+  rules:
+    - exists:
+        - '**/*.json'
