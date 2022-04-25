@@ -79,7 +79,7 @@
     #   || true
 
 
-    docker buildx build \
+    docker build \
       --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
       --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
       --cache-from "${CI_APPLICATION_REPOSITORY}:latest" \
