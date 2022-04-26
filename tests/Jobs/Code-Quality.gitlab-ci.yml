@@ -54,24 +54,40 @@ code_quality:
 
 yamllint:
   stage: test
-  interruptible: true
-  allow_failure: true
-  cache: {}
-  image:
-    name: "cytopia/yamllint:1.26"
-    entrypoint: ['']
+  image: registry.gitlab.com/pipeline-components/yamllint:0.17.0
   before_script: []
-  script:
-    - yamllint -s .
   dependencies: []
   needs: []
+  script:
+    - yamllint -s .
   rules:
     - if: '$CODE_QUALITY_DISABLED || $YAMLLINT_DISABLED'
       when: never
     - if: '$CI_COMMIT_BRANCH'
-      exists:
-        - '**yml'
-        - '**yaml'
+    - exists:
+        - '**/*.yaml'
+        - '**/*.yml'
+    - when: never
+  retry:
+    max: 2
+    when: runner_system_failure
+
+jsonlint:
+  stage: test
+  image: registry.gitlab.com/pipeline-components/jsonlint:0.12.0
+  before_script: []
+  dependencies: []
+  needs: []
+  script:
+    - |
+      find . -not -path './.git/*' -name '*.json' -type f -print0 |
+      parallel --will-cite -k -0 -n1 jsonlint -q
+  rules:
+    - if: '$CODE_QUALITY_DISABLED || $JSONLINT_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+    - exists:
+        - '**/*.json'
     - when: never
   retry:
     max: 2
