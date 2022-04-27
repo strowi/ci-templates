@@ -32,8 +32,8 @@
       || echo "  X no CI_REGISTRY_USER defined"
 
     echo "# Docker + Builder infos: "
-    docker buildx create --use
-    docker buildx ls
+    docker buildx create --use || true
+    docker buildx ls || true
     echo "##"
   }
 
