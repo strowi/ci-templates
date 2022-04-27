@@ -60,20 +60,7 @@
     echo "# Releasing Image: "
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} -> ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}"
 
-    echo "## Pulling: ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} for ${PLATFORMS}"
-    docker pull --platform ${PLATFORMS} ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
-
-    MANIFEST_HASHES="$(docker manifest inspect ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}|grep -i digest|cut -d'"' -f4|sed "s,^,${CI_APPLICATION_REPOSITORY}@,"|sed 's/$/ /'|tr -d '\n')"
-
-    echo "## Adding Hash to Manifest"
-    echo "  - found ${MANIFEST_HASHES}"
-
-    echo "  - creating manifest"
-    docker tag ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}
-    docker manifest create ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG} ${MANIFEST_HASHES}
-
-    echo "  # pushing image"
-    docker manifest push ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}
+    crane copy ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}
 
     echo "##"
   }
