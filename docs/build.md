@@ -9,6 +9,8 @@ include:
 
 build:docker:default:
   extends: .build
+  variables:
+    PLATFORMS: linux/amd64
   script:
     - build_image
 ...
