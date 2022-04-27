@@ -31,7 +31,7 @@
       && ( echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin )  \
       || echo "  X no CI_REGISTRY_USER defined"
 
-    docker buildx ls
+    docker buildx create --use
     echo "##"
   }
 
