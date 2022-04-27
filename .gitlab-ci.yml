@@ -24,7 +24,6 @@ container_scanning:
 release:
   extends: .build
   stage: release
-  variables:
   script:
     - release_latest /build/docker
   rules:
