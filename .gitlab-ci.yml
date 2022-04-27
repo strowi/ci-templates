@@ -12,18 +12,12 @@ build:
   extends: .build
   stage: build
   image: docker:20.10
-  rules:
-    - changes:
-      - build/docker/*
   script:
     - build_image_legacy /build/docker
 
 container_scanning:
   stage: test
   extends: .container_scanning
-  rules:
-    - changes:
-      - build/docker/*
   variables:
     SUB_IMAGE_NAME: /build/docker
 
