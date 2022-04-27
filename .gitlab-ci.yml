@@ -5,8 +5,8 @@ include:
 stages:
   - build
   - test
-  - renovate
   - release
+  - renovate
 
 build:
   extends: .build
