@@ -12,12 +12,16 @@ build:
   extends: .build
   stage: build
   script:
-    - build_image /build/docker
+    - build_image
+  variables:
+    SUB_IMAGE_NAME: /build/docker
 
 
 container_scanning:
   stage: test
   extends: .container_scanning
+  variables:
+    SUB_IMAGE_NAME: /build/docker
 
 release:
   extends: .build
