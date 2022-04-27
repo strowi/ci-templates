@@ -12,7 +12,7 @@ RUN curl -L \
 
 RUN curl -L \
   https://github.com/google/go-containerregistry/releases/download/v0.8.0/go-containerregistry_Linux_x86_64.tar.gz \
-  && tar xvf go-containerregistry_Linux_x86_64.tar.gz
+  && tar xvf go-containerregistry_Linux_x86_64.tar.gz \
   && chmod a+x /crane
 
 FROM docker:20.10
