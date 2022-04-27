@@ -13,10 +13,7 @@ build:
   stage: build
   image: docker:20.10
   script:
-    - build_image
-  variables:
-    SUB_IMAGE_NAME: /build/docker
-
+    - build_image /build/docker
 
 container_scanning:
   stage: test
@@ -27,8 +24,9 @@ container_scanning:
 release:
   extends: .build
   stage: release
+  variables:
   script:
-    - release_latest
+    - release_latest /build/docker
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - when: never
