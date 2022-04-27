@@ -32,6 +32,7 @@
       || echo "  X no CI_REGISTRY_USER defined"
 
     docker buildx create --use
+    docker buildx ls
     echo "##"
   }
 
