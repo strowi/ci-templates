@@ -100,7 +100,7 @@
   }
 
 .build:
-  image: "docker:20.10"
+  image: "registry.gitlab.com/strowi/ci-templates/build/docker"
   interruptible: true
   services:
     - docker:20.10-dind
