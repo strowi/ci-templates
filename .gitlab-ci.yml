@@ -24,6 +24,7 @@ container_scanning:
 release:
   extends: .build
   stage: release
+  image: docker:20.10
   script:
     - release_latest /build/docker
   rules:
