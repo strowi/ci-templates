@@ -31,6 +31,7 @@
       && ( echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin )  \
       || echo "  X no CI_REGISTRY_USER defined"
 
+    echo "# Docker + Builder infos: "
     docker buildx create --use
     docker buildx ls
     echo "##"
@@ -38,20 +39,17 @@
 
   # release the image "$1" as "*:latest"
   # release as tag if git tag returns a tag
-  function release_latest() {
+  function release() {
 
     docker_setup
     define_image "$1"
 
     echo "# Releasing Image: "
-    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} -> ${CI_APPLICATION_REPOSITORY}:latest"
+    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} -> ${CI_APPLICATION_REPOSITORY}:$2"
 
-    if [[ "${1}" == "tag "goo]]; then
-      LATEST_IMAGE=${CI_APPLICATION_REPOSITORY}:latest
-      HASHS=`docker manifest inspect ${image_tagged}|grep -i digest|cut -d'"' -f4|sed "s,^,${CI_APPLICATION_REPOSITORY}@,"|sed 's/$/ /'|tr -d '\n'`
-      docker manifest create ${LATEST_IMAGE} ${HASHS}
-      docker manifest push ${LATEST_IMAGE}
-    fi
+    HASHS="$(docker manifest inspect ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}|grep -i digest|cut -d'"' -f4|sed "s,^,${CI_APPLICATION_REPOSITORY}@,"|sed 's/$/ /'|tr -d '\n')"
+    docker manifest create ${CI_APPLICATION_REPOSITORY}:$2 ${HASHS}
+    docker manifest push ${CI_APPLICATION_REPOSITORY}:$2
 
     echo "##"
   }
