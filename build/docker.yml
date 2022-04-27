@@ -47,6 +47,7 @@
     echo "# Releasing Image: "
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} -> ${CI_APPLICATION_REPOSITORY}:latest"
 
+    docker pull ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
     MANIFEST_HASHES="$(docker manifest inspect ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}|grep -i digest|cut -d'"' -f4|sed "s,^,${CI_APPLICATION_REPOSITORY}@,"|sed 's/$/ /'|tr -d '\n')"
     docker manifest create ${CI_APPLICATION_REPOSITORY}:latest ${MANIFEST_HASHES}
     docker manifest push ${CI_APPLICATION_REPOSITORY}:latest
