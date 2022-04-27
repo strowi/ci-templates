@@ -8,9 +8,17 @@
   image:
     name: aquasec/trivy:0.25.4
     entrypoint: [""]
+  services:
+    - name: docker:20.10-dind
+    entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+      alias: docker
   allow_failure: true
   interruptible: true
   variables:
+    DOCKER_HOST: tcp://docker:2375/
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
     CI_APPLICATION_REPOSITORY: "$CI_REGISTRY_IMAGE$SUB_IMAGE_NAME"
     CI_APPLICATION_TAG: "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     TRIVY_USERNAME: "$CI_REGISTRY_USER"
