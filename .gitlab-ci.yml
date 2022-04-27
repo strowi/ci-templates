@@ -11,6 +11,7 @@ stages:
 build:
   extends: .build
   stage: build
+  image: docker:20.10
   script:
     - build_image
   variables:
