@@ -9,6 +9,7 @@ code_quality:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.26"
+    CODE_QUALITY_DISABLED: true
   needs: []
   script:
     - export SOURCE_CODE=$PWD
