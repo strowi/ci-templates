@@ -50,10 +50,13 @@
 
     docker push --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:latest"
 
-    # push git-tag too
-    test -n "${CI_COMMIT_TAG}" \
-      && docker tag  --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}" \
-      && docker push  --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}"
+          PUSH_LATEST=${PUSH_LATEST:-1}
+      if [[ "${PUSH_LATEST}" -eq 1 ]]; then
+        LATEST_IMAGE=${CI_APPLICATION_REPOSITORY}:latest
+        HASHS=`docker manifest inspect ${image_tagged}|grep -i digest|cut -d'"' -f4|sed "s,^,${CI_APPLICATION_REPOSITORY}@,"|sed 's/$/ /'|tr -d '\n'`
+        docker manifest create ${LATEST_IMAGE} ${HASHS}
+        docker manifest push ${LATEST_IMAGE}
+      fi
 
     echo "##"
   }
@@ -69,31 +72,28 @@
     echo "# Building Images:"
     echo "  - dir: ${SUB_IMAGE_PATH}"
     echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+    test -n "${CI_COMMIT_TAG}" \
+      && DOCKER_BUILD_OPTS="--tag \"${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}\"" \
+      && echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}" || true
 
-    echo "  - trying to pull cache-layers (errors are normal if image doesn't exist)"
+    echo "  - trying to use cache-layers (errors are normal if image doesn't exist)"
     echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}""
     echo "    - ${CI_APPLICATION_REPOSITORY}:latest"
 
-    # docker image pull --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
-    #   || docker image pull --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
-    #   || docker image pull --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:latest" \
-    #   || true
-
-    docker buildx build --platform ${PLATFORMS} \
+    docker buildx build --platform ${PLATFORMS} --push \
       --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
       --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
       --cache-from "${CI_APPLICATION_REPOSITORY}:latest" \
       --tag "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" \
       --tag "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
-      --tag "${CI_APPLICATION_REPOSITORY}:latest" \
+      ${DOCKER_BUILD_OPTS} \
       "${SUB_IMAGE_PATH}"
 
     echo "# Pushing Images:"
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
-
-    docker push --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
-    docker push --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
 
     echo "##"
     # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
@@ -115,7 +115,7 @@
     echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}"
     echo "    - ${CI_APPLICATION_REPOSITORY}:latest"
 
-    docker build --platform ${PLATFORMS} \
+    docker build \
       --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
       --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
       --cache-from "${CI_APPLICATION_REPOSITORY}:latest" \
@@ -128,8 +128,8 @@
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
 
-    docker push --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
-    docker push --platform ${PLATFORMS} "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
 
     echo "##"
     # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
