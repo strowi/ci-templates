@@ -40,7 +40,6 @@
       - ./trivy_container_report.txt
     reports:
       junit: ./trivy_container_report.xml
-  dependencies: []
   rules:
     - if: '$CONTAINER_SCANNING_DISABLED'
       when: never
