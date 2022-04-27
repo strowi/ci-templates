@@ -52,9 +52,9 @@ release:
       --git-author "${RENOVATE_GIT_AUTHOR}"
       --dry-run "${RENOVATE_DRY_RUN}"
       "${CI_PROJECT_PATH}"
-  only:
-    - master
-    - schedules
+  rules:
+    - when: manual
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 
 renovate:
   extends: .renovate
