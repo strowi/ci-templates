@@ -13,7 +13,7 @@ build:
   stage: build
   image: docker:20.10
   script:
-    - build_image /build/docker
+    - build_image_legacy /build/docker
 
 container_scanning:
   stage: test

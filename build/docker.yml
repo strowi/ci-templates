@@ -99,6 +99,48 @@
     # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
   }
 
+  # build docker image
+  # - "./build" builds ./Dockerfile -> "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  # - "./build subtag subdir" builds ./subdir/Dockerfile -> "${CI_REGISTRY_IMAGE}/subdir:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  function build_image_legacy() {
+
+    docker_setup
+    define_image "$1" "$2"
+
+    echo "# Building Images:"
+    echo "  - dir: ${SUB_IMAGE_PATH}"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+
+    echo "  - trying to pull cache-layers (errors are normal if image doesn't exist)"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}"
+    echo "    - ${CI_APPLICATION_REPOSITORY}:latest"
+
+    # docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+    #   || docker image pull "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+    #   || docker image pull "${CI_APPLICATION_REPOSITORY}:latest" \
+    #   || true
+
+
+    docker build \
+      --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_BEFORE_SHA:0:8}" \
+      --cache-from "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
+      --cache-from "${CI_APPLICATION_REPOSITORY}:latest" \
+      --tag "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" \
+      --tag "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}" \
+      --tag "${CI_APPLICATION_REPOSITORY}:latest" \
+      "${SUB_IMAGE_PATH}"
+
+    echo "# Pushing Images:"
+    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+
+    echo "##"
+    # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  }
+
 .build:
   image: "registry.gitlab.com/strowi/ci-templates/build/docker"
   interruptible: true
