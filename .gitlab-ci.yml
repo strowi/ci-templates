@@ -1,9 +1,29 @@
 include:
+  - local: '/build.yml'
   - local: '/tests.yml'
 
 stages:
+  - build
   - test
   - renovate
+  - release
+
+build:
+  extends: .build
+  stage: build
+  script:
+    - build_image /build/docker
+
+
+container_scanning:
+  stage: test
+  extends: .container_scanning
+
+release:
+  extends: .build
+  stage: release
+  script:
+    - release_latest
 
 .renovate:
   variables:
