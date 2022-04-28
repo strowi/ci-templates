@@ -46,6 +46,7 @@ some common build-related functions:
 
 # docker_setup
 # release image "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}" -> "${CI_REGISTRY_IMAGE}:latest"
+# uses [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md)
 - release_latest
 
 # docker_setup
