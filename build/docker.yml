@@ -4,7 +4,7 @@
     # concat repo-path / image-name / branch : commit
     test -n "$1" && SUB_IMAGE_NAME="${1}"
     test -n "$2" && SUB_IMAGE_PATH="${2}" || SUB_IMAGE_PATH=".${SUB_IMAGE_NAME}"
-    test -n "$PLATFORMS" && PLATFORMS="linux/amd64"
+    test -n "$PLATFORMS" && export PLATFORMS="linux/amd64"
     export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}${SUB_IMAGE_NAME}"
 
     echo "# Image Specs:"
