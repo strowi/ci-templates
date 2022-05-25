@@ -144,6 +144,8 @@
 .build:
   image: "registry.gitlab.com/strowi/ci-templates/build/docker"
   interruptible: true
+  variables:
+    PLATFORMS: linux/amd64
   services:
     - docker:20.10-dind
   before_script:
