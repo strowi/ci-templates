@@ -1,0 +1,11 @@
+markdownlint:
+  stage: test
+  image: registry.gitlab.com/pipeline-components/markdownlint:latest
+  interruptible: true
+  allow_failure: true
+  cache: {}
+  needs: []
+  dependencies: []
+  before_script: []
+  script:
+    - mdl --style all --warnings .

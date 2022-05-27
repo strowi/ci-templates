@@ -1,6 +1,7 @@
 include:
   - local: '/tests/dgoss.yml'
   #- local: '/tests/pluto.yml'
+  - local: '/tests/Jobs/markdownlint.yml'
   - local: '/tests/Jobs/Secret-Detection.gitlab-ci.yml'
   # - local: '/tests/Jobs/SAST-IaC.latest.gitlab-ci.yml'
   - local: '/tests/Jobs/Code-Quality.gitlab-ci.yml'
