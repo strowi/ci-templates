@@ -9,7 +9,7 @@
     name: aquasec/trivy:0.41.0
     entrypoint: [""]
   services:
-    - name: docker:20.10-dind
+    - name: docker:23.0-dind
       entrypoint: ["env", "-u", "DOCKER_HOST"]
       command: ["dockerd-entrypoint.sh"]
       alias: docker
