@@ -27,7 +27,6 @@
       ],
       "labels": ["renovate", "automated", "ci"],
       "groupSlug": "automated-updates",
-      "gitLabAutomerge": true,
       "automerge": true
 
     },
