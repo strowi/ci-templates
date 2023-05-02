@@ -8,7 +8,7 @@
   "fetchReleaseNotes": true,
   "separateMajorMinor": false,
   "assignees": ["@strowi"],
-  "prHourlyLimit": "30",
+  "prHourlyLimit": 30,
   "gitlabci": {
     "fileMatch": [
       "^build.+\\.y(a)?ml$",
