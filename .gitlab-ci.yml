@@ -1,6 +1,7 @@
 include:
   - local: '/build.yml'
   - local: '/tests.yml'
+  - local: '/k3d.yml'
 
 stages:
   - build
