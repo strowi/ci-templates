@@ -2,7 +2,7 @@ include:
   - local: '/build.yml'
   - local: '/tests.yml'
   - local: '/k3d.yml'
-
+  - local: '/workflow.yml'
 stages:
   - build
   - test
@@ -52,8 +52,8 @@ release:
       --dry-run "${RENOVATE_DRY_RUN}"
       "${CI_PROJECT_PATH}"
   rules:
-    - when: manual
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    - when: manual
 
 renovate:
   extends: .renovate
