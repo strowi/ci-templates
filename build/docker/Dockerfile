@@ -17,7 +17,7 @@ RUN curl -L \
   && tar xvf go-containerregistry_Linux_x86_64.tar.gz \
   && chmod a+x /crane
 
-FROM docker:20.10
+FROM docker:23.0
 
 COPY --from=fetcher /docker-buildx /usr/lib/docker/cli-plugins/docker-buildx
 COPY --from=fetcher /crane /bin/crane
