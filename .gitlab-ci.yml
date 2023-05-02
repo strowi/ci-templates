@@ -1,7 +1,8 @@
 include:
   - local: '/build.yml'
   - local: '/tests.yml'
-
+  - local: '/k3d.yml'
+  - local: '/workflow.yml'
 stages:
   - build
   - test
@@ -51,9 +52,32 @@ release:
       --dry-run "${RENOVATE_DRY_RUN}"
       "${CI_PROJECT_PATH}"
   rules:
-    - when: manual
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    - when: manual
 
 renovate:
   extends: .renovate
   stage: renovate
+
+
+deploy-tests:
+  stage: test
+  extends: .k3d
+  image: strowi/deploy:latest
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    CI_ENVIRONMENT_SLUG: testing
+  script:
+    - start_k3d
+    - deploy-k8
+    - get_pod nginx-krane
+    - deploy-helm
+    - get_pod nginx-helm
+    - kubectl get deploy,po --all-namespaces
+  parallel:
+    matrix:
+      - K3D_VERSION:
+        - "rancher/k3s:v1.25.8-k3s1"
