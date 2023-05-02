@@ -127,7 +127,7 @@
   services:
     - name: "docker:20.10-dind"
   variables:
-    K3D_VERSION: rancher/k3s:v1.18.15-k3s1
+    K3D_VERSION: rancher/k3s:v1.25.8-k3s1
     K3D_CLUSTER_OPTIONS: -p 30000:30000@loadbalancer --k3s-server-arg "--no-deploy=traefik" --k3s-server-arg "--no-deploy=servicelb" --k3s-server-arg "--no-deploy=metrics-server" --image $K3D_VERSION
     KUBE_NAMESPACE: $CI_PROJECT_PATH_SLUG
 
