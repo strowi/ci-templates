@@ -73,8 +73,6 @@
     echo "# testing if you have set a variable KUBE_CONTEXT"
     echo "# or specified a Gitlab-Environment containing a kubernetes-cluster"
 
-    test -n "${KUBE_CONTEXT}" && echo "# -> yupp, you failed to clear the environment! Quitting..." && exit 1
-
     test -f /etc/os-release && source /etc/os-release
 
     case $ID in
@@ -96,6 +94,7 @@
     echo "# waiting for kubeconfig to be available"
     until curl -s k3s:8081 > /tmp/k3s.yml ; do echo "# waiting for k3d to be ready..." && sleep 3; done
     export KUBECONFIG=/tmp/k3s.yml
+    export KUBE_CONTEXT=default
 
     echo "# waiting for coredns to be ready..."
     until kubectl rollout status deployment/coredns -n kube-system ; do echo "# Waiting for coredns..." && sleep 3; done
@@ -122,7 +121,6 @@
 
   variables:
     KUBE_NAMESPACE: $CI_PROJECT_PATH_SLUG
-    KUBE_CONTEXT: default
   before_script:
     - *k3d_up
     - start_k3d
