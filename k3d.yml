@@ -97,7 +97,7 @@
     wget -q "https://storage.googleapis.com/kubernetes-release/release/v1.25.8/bin/linux/amd64/kubectl" -O /usr/bin/kubectl
 
     echo "# dl k3d"
-    wget -q "https://github.com/rancher/k3d/releases/download/v5.4.9/k3d-linux-amd64" -O /usr/bin/k3d
+    wget -q "https://github.com/rancher/k3d/releases/download/v5.5.1/k3d-linux-amd64" -O /usr/bin/k3d
     chmod +x /usr/bin/k3d /usr/bin/kubectl
 
     echo "# creating cluster"
@@ -128,7 +128,7 @@
     - name: "docker:20.10-dind"
   variables:
     K3D_VERSION: rancher/k3s:v1.25.8-k3s1
-    K3D_CLUSTER_OPTIONS: --k3s-arg "--disable=traefik@server:0" --k3s-arg "--disable=servicelb@server:0" --k3s-arg "--disable=metrics-server@server:0" $K3D_VERSION
+    K3D_CLUSTER_OPTIONS: --k3s-arg "--disable=traefik@server:0" --k3s-arg "--disable=metrics-server@server:0" $K3D_VERSION
     KUBE_NAMESPACE: $CI_PROJECT_PATH_SLUG
 
   before_script:

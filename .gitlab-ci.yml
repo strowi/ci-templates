@@ -3,6 +3,7 @@ include:
   - local: '/tests.yml'
   - local: '/k3d.yml'
   - local: '/workflow.yml'
+
 stages:
   - build
   - test
@@ -24,7 +25,7 @@ container_scanning:
 
 release:
   extends: .build
-  stage: release
+  stage: releasestart_k3d
   image: "registry.gitlab.com/strowi/ci-templates/build/docker:master"
   script:
     - release_latest /build/docker
