@@ -122,7 +122,7 @@
 
   variables:
     KUBE_NAMESPACE: $CI_PROJECT_PATH_SLUG
-
+    KUBE_CONTEXT: default
   before_script:
     - *k3d_up
     - start_k3d
