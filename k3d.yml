@@ -127,8 +127,8 @@
   services:
     - name: "docker:20.10-dind"
   variables:
-    K3D_VERSION: rancher/k3s:v1.25.8-k3s1
-    K3D_CLUSTER_OPTIONS:  --no-lb --k3s-arg "--disable=traefik@all:\*"  --k3s-arg "--disable=metrics-server@all:\*" $K3D_VERSION
+    K3D_VERSION: v1.25.8-k3s1
+    K3D_CLUSTER_OPTIONS:  --no-lb --k3s-arg '--disable=traefik@all:*''  --k3s-arg '--disable=metrics-server@all:*' $K3D_VERSION
     KUBE_NAMESPACE: $CI_PROJECT_PATH_SLUG
 
   before_script:
