@@ -81,4 +81,4 @@ deploy-tests:
   parallel:
     matrix:
       - K3D_VERSION:
-        - "rancher/k3s:v1.25.8-k3s1"
+        - "v1.25.8-k3s1"
