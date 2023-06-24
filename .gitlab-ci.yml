@@ -65,7 +65,7 @@ deploy-tests:
   stage: test
   extends: .k3d
   image: strowi/deploy:latest
-  # variables:
+  variables:
   #   DOCKER_HOST: tcp://docker:2376
   #   DOCKER_TLS_CERTDIR: "/certs"
   #   DOCKER_TLS_VERIFY: 1
