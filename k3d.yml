@@ -97,9 +97,8 @@
     curl  k3s:8081
     until KUBECONFIG=$(curl -s k3s:8081); do echo "# waiting for k3d to be ready..." && sleep 3; done
 
-
     echo "# waiting for coredns to be ready..."
-    until COREDNS=$(kubectl rollout status deployment/coredns -n kube-system) ; do echo "# Waiting for coredns..." && sleep 3; done
+    until $(kubectl rollout status deployment/coredns -n kube-system) ; do echo "# Waiting for coredns..." && sleep 3; done
 
     echo "# see what i did... 8)"
     kubectl get no,deploy,po --all-namespaces
