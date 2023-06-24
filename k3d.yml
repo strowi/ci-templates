@@ -75,47 +75,34 @@
 
     test -n "${KUBE_CONTEXT}" && echo "# -> yupp, you failed to clear the environment! Quitting..." && exit 1
 
-    echo "# installing wget for https proxy compatibility"
-    echo "## checking for OS"
-
     test -f /etc/os-release && source /etc/os-release
 
     case $ID in
       "alpine")
         echo "### detected ${ID}"
         mkdir -p /var/cache/apk;
-        apk --update add wget
+        command -v curl || apk --update add curl
       ;;
       "ubuntu")
         echo "### detected ${ID}";
-        command -v wget || (apt update -qq && apt install wget -yqq)
+        command -v curl || (apt update -qq && apt install wget -yqq)
       ;;
       *);;
     esac
 
     echo "# dl kubectl"
-    wget -q "https://storage.googleapis.com/kubernetes-release/release/v1.25.8/bin/linux/amd64/kubectl" -O /usr/bin/kubectl
-
-    echo "# dl k3d"
-    wget -q "https://github.com/rancher/k3d/releases/download/v5.5.1/k3d-linux-amd64" -O /usr/bin/k3d
-    chmod +x /usr/bin/k3d /usr/bin/kubectl
-
-    echo "# creating cluster"
-    k3d cluster create $K3D_CLUSTER_OPTIONS
+    command -v kubectl || curl -s "https://storage.googleapis.com/kubernetes-release/release/v1.25.8/bin/linux/amd64/kubectl" -o /usr/bin/kubectl
 
     echo "# waiting for kubeconfig to be available"
-    until KUBECONFIG=$(k3d kubeconfig merge -d -s); do echo "# waiting for k3d to be ready..." && sleep 3; done
+    curl  k3s:8081
+    until KUBECONFIG=$(curl -s k3s:8081); do echo "# waiting for k3d to be ready..." && sleep 3; done
 
-    # echo "# fixing up kubeconfig for k8s-inception"
-    # sed -i 's/0.0.0.0/127.0.0.1/g' ${KUBECONFIG}
 
     echo "# waiting for coredns to be ready..."
     until COREDNS=$(kubectl rollout status deployment/coredns -n kube-system) ; do echo "# Waiting for coredns..." && sleep 3; done
 
     echo "# see what i did... 8)"
     kubectl get no,deploy,po --all-namespaces
-
-    export KUBE_CONTEXT=k3d-k3s-default
 
     echo -e "\n\n# K3d ready ######################"
   }
@@ -125,11 +112,19 @@
   stage: test
   image: registry.gitlab.com/strowi/deploy:latest
   services:
-    - name: "docker:20.10-dind"
+    - name: registry.gitlab.com/gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci/releases/$K3S_VERSION
+      alias: k3s
+
+  parallel:
+    matrix:
+      - K3S_VERSION:
+        - v1.25.10-k3s1
+        # - v1.26.5-k3s1
+        # - v1.27.1-k3s1
+
   variables:
-    K3D_VERSION: v1.25.8-k3s1
-    K3D_CLUSTER_OPTIONS:  --no-lb --k3s-arg "--disable=traefik@servers:0" --k3s-arg "--disable=metrics-server@all:*" $K3D_VERSION
     KUBE_NAMESPACE: $CI_PROJECT_PATH_SLUG
 
   before_script:
     - *k3d_up
+
