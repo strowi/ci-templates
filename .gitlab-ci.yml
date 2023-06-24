@@ -25,7 +25,7 @@ container_scanning:
 
 release:
   extends: .build
-  stage: releasestart_k3d
+  stage: release
   image: "registry.gitlab.com/strowi/ci-templates/build/docker:master"
   script:
     - release_latest /build/docker
