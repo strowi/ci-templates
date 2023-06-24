@@ -98,7 +98,7 @@
     export KUBECONFIG=/tmp/k3s.yml
 
     echo "# waiting for coredns to be ready..."
-    until $(kubectl rollout status deployment/coredns -n kube-system) ; do echo "# Waiting for coredns..." && sleep 3; done
+    until kubectl rollout status deployment/coredns -n kube-system ; do echo "# Waiting for coredns..." && sleep 3; done
 
     echo "# see what i did... 8)"
     kubectl get no,deploy,po --all-namespaces
