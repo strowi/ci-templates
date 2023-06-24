@@ -106,7 +106,6 @@
     echo -e "\n\n# K3d ready ######################"
   }
 
-
 .k3d:
   stage: test
   image: registry.gitlab.com/strowi/deploy:latest
