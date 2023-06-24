@@ -101,7 +101,7 @@
     chmod +x /usr/bin/k3d /usr/bin/kubectl
 
     echo "# creating cluster"
-    k3d cluster create ${K3D_CLUSTER_OPTIONS}
+    k3d cluster create $K3D_CLUSTER_OPTIONS
 
     echo "# waiting for kubeconfig to be available"
     until KUBECONFIG=$(k3d kubeconfig merge -d -s); do echo "# waiting for k3d to be ready..." && sleep 3; done
