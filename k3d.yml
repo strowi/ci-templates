@@ -81,17 +81,17 @@
       "alpine")
         echo "### detected ${ID}"
         mkdir -p /var/cache/apk;
-        command -v curl || apk --update add curl
+        test -x curl || apk --update add curl
       ;;
       "ubuntu")
         echo "### detected ${ID}";
-        command -v curl || (apt update -qq && apt install wget -yqq)
+        test -x curl || (apt update -qq && apt install wget -yqq)
       ;;
       *);;
     esac
 
     echo "# dl kubectl"
-    command -v kubectl || curl -s "https://storage.googleapis.com/kubernetes-release/release/v1.25.8/bin/linux/amd64/kubectl" -o /usr/bin/kubectl
+    test -x kubectl || curl -s "https://storage.googleapis.com/kubernetes-release/release/v1.25.8/bin/linux/amd64/kubectl" -o /usr/bin/kubectl
 
     echo "# waiting for kubeconfig to be available"
     until curl -s k3s:8081 > /tmp/k3s.yml ; do echo "# waiting for k3d to be ready..." && sleep 3; done
