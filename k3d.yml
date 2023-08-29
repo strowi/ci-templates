@@ -124,4 +124,3 @@
   before_script:
     - *k3d_up
     - start_k3d
-
