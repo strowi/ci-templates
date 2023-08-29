@@ -1,11 +1,67 @@
 markdownlint:
-  stage: test
-  image: registry.gitlab.com/pipeline-components/markdownlint:latest
-  interruptible: true
-  allow_failure: true
-  cache: {}
+  stage: check
+  image:
+    name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/davidanson/markdownlint-cli2:v0.8.1
+    entrypoint:
+      - "/usr/bin/env"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   needs: []
-  dependencies: []
-  before_script: []
+  cache: []
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: 1 week
+    reports:
+      junit: ./markdownlint.xml
+  variables:
+    MDL_CLI2_CONFIG: |
+      {
+        "outputFormatters": [
+          [ "markdownlint-cli2-formatter-junit", { "name": "markdownlint.xml"  } ],
+          [ "markdownlint-cli2-formatter-default", {} ]
+        ]
+      }
+
+    MDL_CONFIG: |
+      default: true
+      MD004:
+        style: sublist
+      MD010: false
+      MD013: false
+      MD029:
+        style: one_or_ordered
+      MD036: false
+      MD046: false
+
   script:
-    - mdl --style all --warnings .
+    - echo "# using base-config:"
+    - echo "$MDL_CLI2_CONFIG" > /tmp/.markdownlint-cli2.jsonc
+    - |
+      if [ -e .markdownlint.yaml ] ; then
+        echo "# existing config found, not using default"
+      elif [ -e .markdownlint.yml ] ; then
+        echo "# existing config found, not using default"
+      else
+        echo "$MDL_CONFIG" > .markdownlint.yaml
+        echo "Using default config as .markdownlint.yaml"
+        cat .markdownlint.yaml
+      fi
+    - markdownlint-cli2-config "/tmp/.markdownlint-cli2.jsonc" "**/*.md"  # pass glob **/*.md as string so that it is not interpreted by the commandline
+  # rules:
+  #   - if: $MARKDOWNLINT_DISABLED
+  #     when: never
+  #   - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  #     exists:
+  #       - "**/*.md"
+  #     when: always
+  #   - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+  #     when: never
+  #   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  #     exists:
+  #       - "**/*.md"
+  #     when: always
+  #   - if: $CI_COMMIT_BRANCH
+  #     exists:
+  #       - "**/*.md"
+  #     when: manual
+  #   - when: never
