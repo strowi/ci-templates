@@ -6,7 +6,6 @@
 > She does this by leaving messages inside your PRs based on rules that you create with the Ruby scripting language.
 > Over time, as rules are adhered to, the message is amended to reflect the current state of the code review.
 
-
 - ref: <https://danger.systems/>
 - some examples: <https://git.panter.ch/open-source/danger-rules/-/tree/master/rules>
 - awesome danger: <https://github.com/danger/awesome-danger>

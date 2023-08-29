@@ -1,8 +1,8 @@
-## goss / dgoss
+# goss / dgoss
 
 Quick and Easy server testing/validation [https://goss.rocks](https://goss.rocks)
 
-### Usage
+## Usage
 
 This template provides some reasonable defaults for running dgoss,
 you can override them if you need to.

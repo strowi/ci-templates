@@ -1,0 +1,6 @@
+ignores:
+  - .gitlab
+  - ansible/roles/unattended-upgrades
+  - ansible/roles/pss
+  - terraform/**/.terraform/**
+  - venv
