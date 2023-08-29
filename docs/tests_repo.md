@@ -11,10 +11,9 @@ This will test dependenvies with [aquasecurity/trivy](https://github.com/aquasec
 
 It will check for composer/yarn/caro/.. files and check those for CVEs.
 
-### Usage
+### Usage trivy
 
 This will automatically run if you include the template and add a `stage` named `test`:
-
 
 ```yaml
 
@@ -29,9 +28,10 @@ stages:
   - ...
 
 ```
+
 This will clone + test the repository.
 
-### Output
+### Output trivy
 
 Will be in bash, not in MR-Widget, because we are not on the Ultimate Edition (yet).
 
@@ -67,7 +67,7 @@ Total: 1 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 1, CRITICAL: 0)
 
 Uses [Gitleaks](https://github.com/zricethezav/gitleaks) to scan the current branch/mr for secrets/credentials etc.
 
-### Usage
+### Usage gitleaks
 
 This will automatically run if you include the template and add a `stage` named `test`:
 
@@ -85,9 +85,9 @@ stages:
 
 This will scan the current branch with trufflehog.
 
-### Output
+### Output gileaks
 
-```
+```shell
 INFO[0000] opening .                                    
 {
   "line": "# For a PostgreSQL database, use: \"postgresql://db_user:db_password@127.0.0.1:5432/db_name?serverVersion=11\u0026charset=utf8\"",
@@ -115,7 +115,7 @@ INFO[0000] opening .
 
 There are default rules, which can be extended by putting them into a `.gitleaks.toml`. Eg:
 
-```
+```shell
 ~>cat .gitleaks.toml
 [allowlist]
 description = "demo password"
@@ -125,8 +125,7 @@ regexes = ['''db_user:db_password''', '''root@mysql''']
 
 For more examples see upstream documentation!
 
-
-# Fixing things the right way!
+## Fixing things the right way
 
 You will need permissions to *force-push* to the repository in question.
 So it's best to have 1 person fix all the repos for your team.

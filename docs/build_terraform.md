@@ -5,21 +5,21 @@ is a template you can use.
 
 This will:
 
-* fmt
-  * `terraform format`
-  * [terraform-docs](https://terraform-docs.io/)
-  * push back those changes to the repository
+- fmt
+  + `terraform format`
+  + [terraform-docs](https://terraform-docs.io/)
+  + push back those changes to the repository
     * requires `CI_SSH_PRIVATE_KEY` being set with push access
-* [checkov](https://www.checkov.io/)
-  * scan for misconfigurations
-  * show those in MR-Widget / Code
-* plan
-  * show changes
-* infracost
-  * show cost estimation
-    * requires `INFRACOST_API_KEY` (run `infracost register` to obtain)
-* apply
-  * apply changes
+- [checkov](https://www.checkov.io/)
+  + scan for misconfigurations
+  + show those in MR-Widget / Code
+- plan
+  + show changes
+- infracost
+  + show cost estimation
+  + requires `INFRACOST_API_KEY` (run `infracost register` to obtain)
+- apply
+  + apply changes
 
 To ease working with different terraform versions,
 [tfswitch](https://tfswitch.warrensbox.com/) is being

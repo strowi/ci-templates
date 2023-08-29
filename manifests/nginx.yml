@@ -4,23 +4,19 @@ kind: Deployment
 metadata:
   name: test
   labels:
-    app: test
-    aed/team: controls
+    app: nginx-krane
 spec:
   selector:
     matchLabels:
-      app: test
-      aed/team: controls
+      app: nginx-krane
   template:
     metadata:
       labels:
-        app: test
-        aed/team: controls
+        app: nginx-krane
     spec:
       containers:
       - name: nginx
         image: nginx:latest
-        command: ["sh"]
         ports:
         - containerPort: 80
 # ---

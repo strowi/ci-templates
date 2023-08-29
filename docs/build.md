@@ -66,7 +66,8 @@ other, you can just call build $x multiple times in 1 stage,
 or utilize separate stages.
 
 php-Dockerfile:
-```
+
+```Dockerfile
 FROM registry.gitlab.com/x/y/z/base:latest
 ...
 ```
@@ -101,9 +102,10 @@ Both will be pushed too.
 The above works fine for images directly depending on the other. But what if you need to run e.g. composer in-between and want to take advantage of gitlabs-caching?
 
 You can do sth. like the following, which will:
-* build + push php-cli
-* run composer with the above php-cli image on the code + save artifacts
-* download artifacts + build + push app 
+
+- build + push php-cli
+- run composer with the above php-cli image on the code + save artifacts
+- download artifacts + build + push app
 
 ```yaml
 

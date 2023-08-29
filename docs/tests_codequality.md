@@ -25,5 +25,5 @@ variables:
 
 ## Yamllint
 
-There is also a default Yaml-Linter which can be disabled by variable: `YAMLLINT_DISABLED`
-Configuration can be done. See https://github.com/adrienverge/yamllint
+There is also a default Yaml-Linter which can be disabled by variable: `YAMLLINT_DISABLED`.
+Configuration can be done. See <https://github.com/adrienverge/yamllint>.
