@@ -50,7 +50,6 @@ release:
       --platform "gitlab"
       --endpoint "${CI_API_V4_URL}"
       --git-author "${RENOVATE_GIT_AUTHOR}"
-      --dry-run "${RENOVATE_DRY_RUN}"
       "${CI_PROJECT_PATH}"
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
