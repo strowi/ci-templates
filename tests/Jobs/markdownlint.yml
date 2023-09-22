@@ -1,7 +1,7 @@
 markdownlint:
   stage: test
   image:
-    name: davidanson/markdownlint-cli2:v0.8.1
+    name: davidanson/markdownlint-cli2:v0.10.0
     entrypoint:
       - "/usr/bin/env"
       - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

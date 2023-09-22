@@ -6,7 +6,7 @@
 .container_scanning:
   stage: test
   image:
-    name: aquasec/trivy:0.41.0
+    name: aquasec/trivy:0.45.1
     entrypoint: [""]
   services:
     - name: docker:23.0-dind
