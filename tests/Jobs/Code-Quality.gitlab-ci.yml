@@ -75,7 +75,7 @@ yamllint:
 
 jsonlint:
   stage: test
-  image: registry.gitlab.com/pipeline-components/jsonlint:0.18.1
+  image: registry.gitlab.com/pipeline-components/jsonlint:0.18.2
   before_script: []
   dependencies: []
   needs: []
