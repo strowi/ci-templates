@@ -55,7 +55,7 @@ code_quality:
 
 yamllint:
   stage: test
-  image: registry.gitlab.com/pipeline-components/yamllint:0.28.1
+  image: registry.gitlab.com/pipeline-components/yamllint:0.29.0
   before_script: []
   dependencies: []
   needs: []
