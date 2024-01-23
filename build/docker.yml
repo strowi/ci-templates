@@ -132,9 +132,13 @@
     echo "# Pushing Images:"
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     echo "  - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+    test -n "${CI_COMMIT_TAG}" \
+      && echo "    - ${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}" || true
+
 
     docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
     docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}"
+    docker push "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_TAG}"
 
     echo "##"
     # analyze_image "${CI_APPLICATION_REPOSITORY}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
