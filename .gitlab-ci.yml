@@ -53,7 +53,7 @@ release:
       "${CI_PROJECT_PATH}"
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
-    - when: manual
+#    - when: manual
 
 renovate:
   extends: .renovate
