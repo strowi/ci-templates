@@ -46,7 +46,7 @@ markdownlint:
         echo "Using default config as .markdownlint.yaml"
         cat .markdownlint.yaml
       fi
-    - markdownlint-cli2-config "/tmp/.markdownlint-cli2.jsonc" "**/*.md"  # pass glob **/*.md as string so that it is not interpreted by the commandline
+    - markdownlint-cli2 --config "/tmp/.markdownlint-cli2.jsonc" "**/*.md"  # pass glob **/*.md as string so that it is not interpreted by the commandline
   # rules:
   #   - if: $MARKDOWNLINT_DISABLED
   #     when: never
