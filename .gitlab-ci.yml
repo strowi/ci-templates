@@ -15,7 +15,7 @@ build:
   stage: build
   image: docker:24.0
   script:
-    - build_image_legacy /build/docker
+    - build_image /build/docker
 
 container_scanning:
   stage: test
