@@ -58,7 +58,7 @@
   interruptible: true
   image: "registry.gitlab.com/strowi/dgoss:latest"
   services:
-    - name: "docker:24.0-dind"
+    - name: "docker:25.0-dind"
   variables:
     GOSS_OPTS: --format junit
     GOSS_FILES_STRATEGY: cp

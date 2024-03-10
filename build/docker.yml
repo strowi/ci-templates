@@ -147,6 +147,6 @@
   variables:
     PLATFORMS: linux/amd64
   services:
-    - docker:24.0-dind
+    - docker:25.0-dind
   before_script:
     - *image_build
