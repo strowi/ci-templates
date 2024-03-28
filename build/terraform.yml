@@ -27,7 +27,7 @@ image:
   stage: validate
   image:
     # TODO: mirror image
-    name: bridgecrew/checkov:3.2.43
+    name: bridgecrew/checkov:3.2.49
     entrypoint:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
