@@ -55,7 +55,7 @@ code_quality:
 
 yamllint:
   stage: test
-  image: registry.gitlab.com/pipeline-components/yamllint:0.31.1
+  image: registry.gitlab.com/pipeline-components/yamllint:0.31.2
   before_script: []
   dependencies: []
   needs: []
@@ -75,7 +75,7 @@ yamllint:
 
 jsonlint:
   stage: test
-  image: registry.gitlab.com/pipeline-components/jsonlint:0.19.3
+  image: registry.gitlab.com/pipeline-components/jsonlint:0.19.4
   before_script: []
   dependencies: []
   needs: []
