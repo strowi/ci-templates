@@ -13,7 +13,7 @@ stages:
 build:
   extends: .build
   stage: build
-  image: docker:25.0
+  image: docker:27.0
   script:
     - build_image /build/docker
 
