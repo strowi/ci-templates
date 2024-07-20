@@ -16,12 +16,29 @@ build:
   image: docker:27.0
   script:
     - build_image /build/docker
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
+
 
 container_scanning:
   stage: test
   extends: .container_scanning
   variables:
     SUB_IMAGE_NAME: /build/docker
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
 
 release:
   extends: .build
@@ -32,6 +49,14 @@ release:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - when: never
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
 
 .renovate:
   variables:
@@ -58,8 +83,6 @@ release:
 renovate:
   extends: .renovate
   stage: renovate
-
-
 
 deploy-tests:
   stage: test
