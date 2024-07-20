@@ -72,7 +72,7 @@ deploy-tests:
     # - deploy-helm
     # - get_pod nginx-helm
     - kubectl get deploy,po --all-namespaces
-  parallel:
-    matrix:
-      - K3S_VERSION:
-        - v1.25.10-k3s1
+  # parallel:
+  #   matrix:
+  #     - K3S_VERSION:
+  #       - v1.25.10-k3s1
