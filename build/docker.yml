@@ -150,3 +150,6 @@
     - docker:27.0-dind
   before_script:
     - *image_build
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never

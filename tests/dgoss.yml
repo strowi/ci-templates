@@ -65,7 +65,9 @@
     GOSS_SLEEP: 3s
   before_script:
     - *dgoss_test
+  script:
+    - dgoss_run ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} sleep 5s
   artifacts:
-    expire_in: 1 mos
+    expire_in: 1 week
     reports:
       junit: goss.xml

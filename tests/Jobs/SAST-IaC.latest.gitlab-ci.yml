@@ -22,6 +22,8 @@ kics-iac-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: '$CI_COMMIT_TAG'
+      when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kics/
       when: never
     - if: $CI_COMMIT_BRANCH
