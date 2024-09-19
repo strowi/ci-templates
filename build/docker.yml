@@ -163,7 +163,7 @@
   variables:
     PLATFORMS: linux/amd64
   services:
-    - docker:27.0-dind
+    - docker:27.2-dind
   before_script:
     - *image_build
   rules:

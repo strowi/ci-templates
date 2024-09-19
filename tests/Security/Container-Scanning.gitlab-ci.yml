@@ -6,10 +6,10 @@
 .container_scanning:
   stage: test
   image:
-    name: aquasec/trivy:0.53.0
+    name: aquasec/trivy:0.55.2
     entrypoint: [""]
   services:
-    - name: docker:27.0-dind
+    - name: docker:27.2-dind
       entrypoint: ["env", "-u", "DOCKER_HOST"]
       command: ["dockerd-entrypoint.sh"]
       alias: docker
