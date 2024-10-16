@@ -4,7 +4,7 @@
     # concat repo-path / image-name / branch : commit
     test -n "$1" && SUB_IMAGE_NAME="${1}"
     test -n "$2" && SUB_IMAGE_PATH="${2}" || SUB_IMAGE_PATH=".${SUB_IMAGE_NAME}"
-    test -n "$PLATFORMS" && export PLATFORMS="linux/amd64"
+    test -z "${PLATFORMS+x}" && export PLATFORMS="linux/amd64"
     export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}${SUB_IMAGE_NAME}"
 
     echo "# Image Specs:"
@@ -160,8 +160,6 @@
 .build:
   image: "registry.gitlab.com/strowi/ci-templates/build/docker"
   interruptible: true
-  variables:
-    PLATFORMS: linux/amd64
   services:
     - docker:27.2-dind
   before_script:
@@ -174,7 +172,7 @@
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       exists:
-        - Dockerfile
+        - "**/Dockerfile"
     - if: $CI_COMMIT_BRANCH
       exists:
         - Dockerfile
