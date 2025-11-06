@@ -64,7 +64,7 @@ release:
     RENOVATE_DRY_RUN: "false"
     LOG_LEVEL: "info"
   image:
-    name: renovate/renovate:41.1
+    name: renovate/renovate:42.0
     entrypoint: [""]
   dependencies: []
   needs: []
